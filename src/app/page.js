@@ -8,7 +8,7 @@ function HomePage() {
             
             <Link href="/account">Account Page</Link>
             <br />
-            <Link href="/meal">Meal Page</Link>
+            <Link href="/view-meals">Meal Page</Link>
             <br />
             <Link href="/create-account">Create Account Page</Link>
             <br />
