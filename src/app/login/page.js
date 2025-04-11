@@ -2,7 +2,7 @@
 
 import { useState } from "react"; //to create input states
 import Link from "next/link";
-
+import { Button } from "@/components/ui/button";
 function LoginPage() {
 
     const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ function LoginPage() {
             // connecting to backeend logic here
             // POST request
             // Authenticating the user
-            
+
             console.log("Trying to log in with:", email, password);
         } catch (error) {
             console.error("Login error:", error);
@@ -58,12 +58,9 @@ function LoginPage() {
                   </div>
         
                   {/* Submit Button */}
-                  <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-                  >
+                  <Button type="submit" variant ="default" className="w-full">
                     Log In
-                  </button>
+                  </Button>
                 </form>
         
                 {/* Links */}
@@ -82,3 +79,5 @@ function LoginPage() {
 
 
 }
+
+export default LoginPage;
