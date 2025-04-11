@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AccountContext, AccountProvider } from "./AccountContext";
 import { useContext } from "react";
 import { Progress } from "@/components/ui/progress";
+import AccountCredentials from "./(steps)/AccountCredentials";
 import IngredientPreferences from "./(steps)/IngredientPreferences";
 import HealthDetails from "./(steps)/HealthDetails";
 import HealthGoal from "./(steps)/HealthGoal";
@@ -43,6 +44,7 @@ function CreateAccount() {
                 </button>
             </div>
             <br />
+            {currentStep === 0 && <AccountCredentials />}
             {currentStep === 1 && <IngredientPreferences />}
             {currentStep === 2 && <HealthDetails />}
             {currentStep === 3 && <HealthGoal />}
