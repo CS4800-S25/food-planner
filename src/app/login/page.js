@@ -29,22 +29,22 @@ function LoginPage() {
 
     return (
         
-        <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <Card className="w-full max-w-md">
+        <main className="min-h-screen flex items-center justify-center bg-rose-50 p-6">
+        <Card className="w-full max-w-xl bg-white/90 border-2 border-rose-100 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-center text-2xl">
+            <CardTitle className="text-center text-3xl text-rose-600">
               Log in to Food Planner
             </CardTitle>
           </CardHeader>
   
           <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-6">
               {/* Email Field */}
               <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
+                <label className="block text-sm font-medium mb-1 text-rose-700">Email</label>
                 <input
                   type="email"
-                  className="w-full border border-gray-300 p-2 rounded"
+                  className="w-full border border-rose-200 p-3 rounded-lg bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-300"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -53,10 +53,10 @@ function LoginPage() {
   
               {/* Password Field */}
               <div>
-                <label className="block text-sm font-medium mb-1">Password</label>
+                <label className="block text-sm font-medium mb-1 text-rose-700">Password</label>
                 <input
                   type="password"
-                  className="w-full border border-gray-300 p-2 rounded"
+                  className="w-full border border-rose-200 p-3 rounded-lg bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-300"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -64,17 +64,17 @@ function LoginPage() {
               </div>
   
               {/* Submit Button */}
-              <Button type="submit" variant="default" className="w-full">
+              <Button type="submit" variant="default" className="w-full bg-rose-500 hover:bg-rose-600 text-white">
                 Log In
               </Button>
             </form>
           </CardContent>
   
           <CardFooter className="flex justify-between text-sm">
-            <Link href="/forgot-password" className="text-blue-600 hover:underline">
+            <Link href="/forgot-password" className="text-rose-500 hover:underline">
               Forgot password?
             </Link>
-            <Link href="/create-account" className="text-blue-600 hover:underline">
+            <Link href="/create-account" className="text-rose-500 hover:underline">
               Create Account
             </Link>
           </CardFooter>
