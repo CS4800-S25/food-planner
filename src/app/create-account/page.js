@@ -9,6 +9,7 @@ import HealthDetails from "./(steps)/HealthDetails";
 import HealthGoal from "./(steps)/HealthGoal";
 import TotalMeals from "./(steps)/TotalMeals";
 import Budget from "./(steps)/Budget";
+import CreateAccountFirebase from "./CreateAccountFirebase";
 
 function CreateAccount() {
     const { currentStep, setCurrentStep } = useContext(AccountContext);
@@ -36,12 +37,17 @@ function CreateAccount() {
                     value={(currentStep / STEPS_LIMIT) * 100}
                     className="w-1/2"
                 />
-                <button
-                    onClick={handleNextStep}
-                    disabled={currentStep === STEPS_LIMIT}
-                >
-                    Next Step
-                </button>
+
+                {currentStep < STEPS_LIMIT && (
+                    <button
+                        onClick={handleNextStep}
+                        disabled={currentStep === STEPS_LIMIT}
+                    >
+                        Next Step
+                    </button>
+                )}
+
+                {currentStep === STEPS_LIMIT && <CreateAccountFirebase />}
             </div>
             <br />
             {currentStep === 0 && <AccountCredentials />}
@@ -53,8 +59,10 @@ function CreateAccount() {
             <br />
 
             {currentStep == STEPS_LIMIT && (
-                <div className="text-center text-2xl font-bold">
-                    Account Created Successfully!
+                <div>
+                    <h1 className="text-center text-2xl font-bold">
+                        Account Created Successfully!
+                    </h1>
                 </div>
             )}
 
