@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"; //to create input states
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader,CardTitle,CardContent,CardFooter,} from "@/components/ui/card";
+import { signIn } from "next-auth/react";
 
 function LoginPage() {
 
@@ -24,7 +25,7 @@ function LoginPage() {
 
 
     const handleGoogleSignIn = () => {
-        SignIn("google", { callbackUrl: "/"});
+        signIn("google", { callbackUrl: "/"});
 
     };
 
