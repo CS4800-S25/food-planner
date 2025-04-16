@@ -7,6 +7,7 @@ import { Card, CardHeader,CardTitle,CardContent,CardFooter,} from "@/components/
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 
 function LoginPage() {
@@ -35,6 +36,7 @@ function LoginPage() {
     const { status } = useSession();
     const params = useSearchParams();
     const message = params.get("message");
+    const router = useRouter();
 
     const [showMessage, setShowMessage] = useState(false);
 
@@ -44,11 +46,13 @@ function LoginPage() {
 
       const timer = setTimeout(() => {
         setShowMessage(false);
+
+        router.replace("/login");
       }, 2000); 
 
     return () => clearTimeout(timer); // cleanup if unmounted
     }
-}, [status, message]);
+}, [status, message, router]);
     return (
         
         <main className="min-h-screen flex items-start justify-center pt-36 p-6 bg-cover bg-center"
