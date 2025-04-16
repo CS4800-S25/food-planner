@@ -19,7 +19,7 @@ function LoginPage() {
     useEffect(() => {
       const interval = setInterval(() => {
         setCurrentTaglineIndex((prev) => (prev +1) % tagLines.length);
-      }, 1500);
+      }, 2000);
       return () => clearInterval(interval);
     }, []);
 
@@ -33,10 +33,13 @@ function LoginPage() {
 
     return (
         
-        <main className="min-h-screen flex items-center justify-center bg-rose-50 p-6">
-        <Card className="w-full max-w-3xl bg-white/90 border-2 border-rose-100 shadow-lg p-20">
+        <main className="min-h-screen flex items-start justify-center pt-36 p-6 bg-cover bg-center"
+              style= {{ backgroundImage: "url('/images/background.png')" }}>
+
+        <Card className="w-full max-w-3xl bg-white border-2 border-lime-100 shadow-xl p-20">
+          
           <CardHeader>
-            <CardTitle className="text-center text-3xl text-rose-600">
+            <CardTitle className="text-center text-3xl text-green-700 font-semibold">
             Welcome to Food Planner
             </CardTitle>
           </CardHeader>
@@ -44,14 +47,14 @@ function LoginPage() {
           <CardContent className="space-y-6">
               {/* Tagline */} 
             
-              <div className="text-center text-rose-500 text-base font-medium min-h-[24px] transition-opacity duration-500 ease-in-out">
+              <div className="text-center text-lime-700 text-base font-medium min-h-[24px] transition-opacity duration-500 ease-in-out">
                 {tagLines[currentTaglineIndex]}
               </div>
             
               {/* Google sign in button */}
               <Button
                 onClick = { handleGoogleSignIn }
-                className="w-full bg-rose-500 hover:bg-rose-600 text-white">
+                className="w-full bg-lime-500 hover:bg-lime-600 text-white">
 
                 Sign In with Google
 
