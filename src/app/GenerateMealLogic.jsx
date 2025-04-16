@@ -44,6 +44,18 @@ export default function GenerateMealLogic() {
           <div className="border p-4 rounded shadow bg-white">🥗 Veggie Bowl</div>
         </div>
       )}
+
+        
+        <Button              // REMOVE LATER,FOR DEV AND TESTING ONLY
+        variant="outline"
+        className="mt-4"
+        onClick={() => {
+        localStorage.removeItem("setupComplete");
+        location.reload();
+        }}
+        >
+         Reset User Status (Dev Only)
+        </Button>
     </div>
   );
 }
