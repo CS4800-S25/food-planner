@@ -4,7 +4,7 @@ import { auth, signOut } from "@/app/auth";
 import { redirect } from "next/navigation";
 
 import SignOutButton from "./SignOutButton";
-
+import GenerateLogic from "./GenerateMealLogic";
 
 export async function UserAvatar() {
     const session = await auth();
@@ -32,6 +32,8 @@ export default async function HomePage() {
 
     const session = await auth();
 
+    
+
     if (!session?.user) {
         redirect("/login");
     }
@@ -41,6 +43,10 @@ export default async function HomePage() {
             <UserAvatar />
             <h1 className="text-3xl font-bold text-center">Home Page</h1>
             <p className="text-center">Welcome to the Food Planner App.</p>
+
+            {/* Show conditional content: Generate button or meals */}
+            <GenerateLogic />
+            <br />
             <Link href="/account">Account Page</Link>
             <br />
             <Link href="/create-account">Create Account Page</Link>
