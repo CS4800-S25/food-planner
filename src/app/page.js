@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { signIn, auth, signOut } from "@/app/auth";
+import { auth, signOut } from "@/app/auth";
+import { redirect } from "next/navigation";
+
 
 export async function UserAvatar() {
     const session = await auth();
@@ -24,14 +26,19 @@ export async function UserAvatar() {
     );
 }
 
-function HomePage() {
+export default async function HomePage() {
+
+    const session = await auth();
+
+    if (!session?.user) {
+        redirect("/login");
+    }
+
     return (
         <main>
             <UserAvatar />
             <h1 className="text-3xl font-bold text-center">Home Page</h1>
             <p className="text-center">Welcome to the Food Planner App.</p>
-            <Link href="/login">LoginPage</Link>
-            <br />
             <Link href="/account">Account Page</Link>
             <br />
             <Link href="/create-account">Create Account Page</Link>
@@ -39,14 +46,7 @@ function HomePage() {
             <Link href="/meal/KBBQ">
                 Meal Info Page called &apos;KBBQ&apos;
             </Link>
-            <form
-                action={async () => {
-                    "use server";
-                    await signIn("google");
-                }}
-            >
-                <button type="submit">Sign in with Google</button>
-            </form>
+            
 
             <form
                 action={async () => {
@@ -61,4 +61,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+//export default HomePage;
