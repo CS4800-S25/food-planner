@@ -5,6 +5,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader,CardTitle,CardContent,CardFooter,} from "@/components/ui/card";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+
 
 function LoginPage() {
 
@@ -29,8 +32,23 @@ function LoginPage() {
 
     };
 
-    
+    const { status } = useSession();
+    const params = useSearchParams();
+    const message = params.get("message");
 
+    const [showMessage, setShowMessage] = useState(false);
+
+    useEffect(() => {
+      if (status === "unauthenticated" && message === "signedout") {
+        setShowMessage(true);
+
+      const timer = setTimeout(() => {
+        setShowMessage(false);
+      }, 2000); 
+
+    return () => clearTimeout(timer); // cleanup if unmounted
+    }
+}, [status, message]);
     return (
         
         <main className="min-h-screen flex items-start justify-center pt-36 p-6 bg-cover bg-center"
@@ -60,10 +78,18 @@ function LoginPage() {
 
             </Button>
 
+            {showMessage && (
+            <p className="text-green-700 text-center font-medium mb-4">
+                You've been signed out successfully.
+            </p>
+            )}      
+
 
           </CardContent>
             
         </Card>
+     
+
       </main>
     );
     

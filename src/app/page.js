@@ -3,6 +3,8 @@ import Image from "next/image";
 import { auth, signOut } from "@/app/auth";
 import { redirect } from "next/navigation";
 
+import SignOutButton from "./SignOutButton";
+
 
 export async function UserAvatar() {
     const session = await auth();
@@ -47,15 +49,8 @@ export default async function HomePage() {
                 Meal Info Page called &apos;KBBQ&apos;
             </Link>
             
-
-            <form
-                action={async () => {
-                    "use server";
-                    await signOut();
-                }}
-            >
-                <button type="submit">Sign out</button>
-            </form>
+            <br />
+            <SignOutButton/>
             <br />
         </main>
     );
