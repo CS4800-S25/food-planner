@@ -1,3 +1,4 @@
+
 import { collection, addDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import db from "@/lib/firebase";
@@ -5,6 +6,7 @@ import { useSession } from "next-auth/react";
 import IngredientPreferences from "./(steps)/IngredientPreferences";
 
 async function createAccountFirebase() {
+    const { data: session } = useSession();
     const documentData = {
         email: session?.user?.email,  // save the signed-in user's email
 
@@ -26,9 +28,7 @@ async function createAccountFirebase() {
 
 function CreateAccountFirebase() {
 
-    const {data: session} = useSession();
-
-    return <Button onClick={createAccountFirebase(session)}>
+    return <Button onClick={createAccountFirebase}>
                 Create Account
            </Button>;
 }
