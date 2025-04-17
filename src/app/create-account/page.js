@@ -31,7 +31,7 @@ function CreateAccount() {
     
           {/* Progress bar */}
           <Progress
-            value={(currentStep / STEPS_LIMIT) * 100}
+            value={((currentStep - 1) / (STEPS_LIMIT - 1)) * 100}
             className="w-full"
           />
     
@@ -55,7 +55,7 @@ function CreateAccount() {
           <div className="flex justify-between mt-4">
             <button
               onClick={handlePreviousStep}
-              disabled={currentStep === 0}
+              disabled={currentStep === 1}
               className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
             >
               ← Previous
