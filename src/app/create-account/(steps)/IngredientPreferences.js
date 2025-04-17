@@ -1,11 +1,25 @@
+import { useState } from "react";
+
 function IngredientPreferences() {
+    
+    const [ingredients, setIngredients] = useState("");
+    
     return (
-    <div className="space-y-4">
+    <div className="text-center">
         <h1 className="text-xl font-semibold text-center text-green-700">
         Hi there! Let’s begin by setting your ingredient preferences.
         </h1>
+        <br/>
 
-        
+        <input
+            type="text"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+            className="border border-gray-300 rounded px-4 py-2 w-full"
+            placeholder="Enter ingredients you'd like to include:"
+        />
+
+
     </div>
 
     );
