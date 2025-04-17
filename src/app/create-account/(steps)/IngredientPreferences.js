@@ -1,7 +1,14 @@
 function IngredientPreferences() {
-    return <div>
-        <h1>This is step 1 of IngredientPreferences!</h1>
-    </div>;
+    return (
+    <div className="space-y-4">
+        <h1 className="text-xl font-semibold text-center text-green-700">
+        Hi there! Let’s begin by setting your ingredient preferences.
+        </h1>
+
+        
+    </div>
+
+    );
 }
 
 export default IngredientPreferences;
