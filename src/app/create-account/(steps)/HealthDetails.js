@@ -1,11 +1,20 @@
 "use client"
 
-import {useState } from "react";
+import {useState, useEffect, useContext} from "react";
+import { AccountContext } from "../AccountContext";
 
 
 function HealthDetails() {
 
-    const [notes, setNotes] = useState("");
+    // access the form context
+    const { formData, updateFormData } = useContext(AccountContext);
+
+    const [notes, setNotes] = useState(formData.healthDetails || "");
+
+    // when notes change, sync to global formData
+    useEffect(() => {
+        updateFormData({ healthDetails: notes });
+    }, [notes]);
 
     return (
         <div className="space-y-6">

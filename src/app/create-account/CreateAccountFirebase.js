@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import db from "@/lib/firebase";
 import { useSession } from "next-auth/react";  
 //import IngredientPreferences from "./(steps)/IngredientPreferences";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AccountContext } from "./AccountContext";
 import { useRouter } from "next/navigation";
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { AccountContext } from "../AccountContext";
 
 function IngredientPreferences() {
