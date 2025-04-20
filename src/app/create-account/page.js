@@ -26,14 +26,9 @@ function CreateAccount() {
     
     return (
         <div className="max-w-3xl mx-auto mt-10 space-y-6 p-4 border rounded shadow bg-white">
-          <h1 className="text-2xl font-bold text-center">Create Account</h1>
+          <h1 className="text-2xl font-bold text-center">Let's Personalize Your Meal Plan</h1>
           <p className="text-center text-gray-600">Step {currentStep} of {STEPS_LIMIT} </p>
     
-          {/* Progress bar */}
-          <Progress
-            value={((currentStep - 1) / (STEPS_LIMIT - 1)) * 100}
-            className="w-full"
-          />
     
           {/* Step content */}
           <div className="mt-6">
@@ -71,6 +66,14 @@ function CreateAccount() {
               </button>
             )}
           </div>
+          
+
+          {/* Progress bar */}
+          <Progress
+            value={((currentStep - 1) / (STEPS_LIMIT - 1)) * 100}
+            className="w-full"
+          />
+
     
           {/* Show Create Account Firebase button only at final step */}
           <div className="text-center mt-4">
