@@ -48,13 +48,16 @@ function CreateAccount() {
     
           {/* Navigation buttons */}
           <div className="flex justify-between mt-4">
+            {currentStep > 1 ? (
             <button
               onClick={handlePreviousStep}
-              disabled={currentStep === 1}
               className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
             >
               ← Previous
             </button>
+            ) : (
+              <div className="w-[100px]" /> // This empty div holds space for alignment
+            )}
     
             {currentStep < STEPS_LIMIT && (
               <button
