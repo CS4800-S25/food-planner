@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 //import IngredientPreferences from "./(steps)/IngredientPreferences";
 import { useContext } from "react";
 import { AccountContext } from "./AccountContext";
+import { useRouter } from "next/navigation";
 
 async function createAccountFirebase(session, formData) {
     //const { data: session } = useSession();
@@ -31,6 +32,8 @@ function CreateAccountFirebase() {
 
     const { data: session } = useSession();
     const { formData } = useContext(AccountContext); //pull data from context
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleClick = async () => {
         if (!session) {
@@ -38,17 +41,33 @@ function CreateAccountFirebase() {
           return;
         }
 
+        setIsLoading(true);
+
         try {
             await createAccountFirebase(session, formData);
             console.log("Preferences saved to Firebase!");
+            setTimeout(() => {
+                router.push("/");
+            }, 1000)
           } catch (err) {
             console.error("Error saving to Firebase:", err);
+            setIsLoading(false);
           }
        };
 
-    return <Button onClick={handleClick}>
-                Finish
-           </Button>;
+    return (
+        <div className="text-center mt-6 space-y-4">
+            {isLoading ? (
+                 <p className="text-green-600 text-lg font-medium">
+
+                 </p>
+            ) : (
+                <Button onClick={handleClick}>
+                 Finish
+                </Button>
+            )}
+        </div>
+    );
 }
 
 export default CreateAccountFirebase;
