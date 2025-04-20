@@ -31,7 +31,7 @@ function CreateAccount() {
     
     
           {/* Step content */}
-          <div className="mt-6">
+          <div className="mt-6 min-h-[280px] flex flex-col justify-center">
             {currentStep === 1 &&  <IngredientPreferences />}
             {currentStep === 2 && <HealthDetails />}
             {currentStep === 3 && <HealthGoal />}
