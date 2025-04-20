@@ -7,14 +7,14 @@ function HealthGoal() {
 
     // Pull form data context
     const { formData, updateFormData } = useContext(AccountContext);
-    const [goalText, setGoalText] = useState(formData.healthGoal || "");
+    const [goal, setGoalText] = useState(formData.healthGoal || "");
     
     
     // Update global form data when local goal changes
     useEffect(() => {
         updateFormData({ healthGoal: goal });
     }, [goal]);
-    
+
     return (
         <div className="space-y-6">
             {/* Section heading */}
@@ -33,7 +33,7 @@ function HealthGoal() {
                     Your Goals
                 </label>
                 <textarea
-                    value={goalText}
+                    value={goal}
                     onChange={(e) => setGoalText(e.target.value)}
                     placeholder="e.g. I want to lose some weight and/or eat more vegetables."
                     className="w-full border border-gray-300 rounded px-4 py-2 min-h-[120px] resize-y focus:outline-none focus:ring-2 focus:ring-lime-300"
