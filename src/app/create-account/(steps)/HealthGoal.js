@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AccountContext } from "../AccountContext";
 
 function HealthGoal() {
 
-    const [goalText, setGoalText] = useState("");
-
+    // Pull form data context
+    const { formData, updateFormData } = useContext(AccountContext);
+    const [goalText, setGoalText] = useState(formData.healthGoal || "");
+    
+    
+    // Update global form data when local goal changes
+    useEffect(() => {
+        updateFormData({ healthGoal: goal });
+    }, [goal]);
+    
     return (
         <div className="space-y-6">
             {/* Section heading */}
