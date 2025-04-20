@@ -40,7 +40,7 @@ function HealthGoal() {
                 />
             </div>
 
-            {/* 🛠️ Later: store goalText in context */}
+            
             </div>
     );
 }

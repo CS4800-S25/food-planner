@@ -35,14 +35,12 @@ function TotalMeals() {
                     min={1}
                     max={6}
                     value={mealsPerDay}
-                    onChange={(e) => setMealsPerDay(e.target.value)}
+                    onChange={(e) => setMeals(e.target.value)}
                     placeholder="e.g. 3"
                     className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-lime-300"
                 />
             </div>
 
-            {/* Later store this in context */}
-            {/* TODO: Hook 'meals' into shared context */}
         </div>
     );
 }
