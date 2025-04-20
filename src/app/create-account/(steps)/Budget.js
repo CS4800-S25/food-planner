@@ -1,8 +1,40 @@
+"use client";
+
+import { useState } from "react";
+
 function Budget() {
+
+    const [budget, setBudget] = useState("");
+
     return (
-        <div>
-            <h1>Welcome to step 5 for Budget!</h1>
-            <p>Here you can set your budget for the meal plan.</p>
+        <div className="space-y-6">
+            {/* Step title */}
+            <h2 className="text-xl font-semibold text-center text-lime-700">
+                What's your daily food budget? 
+            </h2>
+
+            {/* Description text */}
+            <p className="text-center text-gray-600">
+                We’ll use this to suggest ingredients and meals that fit your needs.
+            </p>
+
+            {/* Input field */}
+            <div>
+                <label className="block text-gray-700 font-medium mb-1">
+                    Budget per Day (USD)
+                </label>
+                <input
+                    type="number"
+                    min={1}
+                    value={budget}
+                    onChange={(e) => setBudget(e.target.value)}
+                    placeholder="e.g. 10"
+                    className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-lime-300"
+                />
+            </div>
+
+            
+            {/* TODO: Store 'budget' value in global context or send to backend */}
         </div>
     );
 }

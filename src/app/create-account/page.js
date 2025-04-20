@@ -25,18 +25,13 @@ function CreateAccount() {
     };
     
     return (
-        <div className="max-w-3xl mx-auto mt-10 space-y-6 p-4 border rounded shadow bg-white">
-          <h1 className="text-2xl font-bold text-center">Create Account</h1>
+        <div className="max-w-3xl mx-auto pt-32 min-h-[600px] space-y-6 p-6 border rounded shadow bg-white">
+          <h1 className="text-2xl font-bold text-center">Let's Personalize Your Meal Plan</h1>
           <p className="text-center text-gray-600">Step {currentStep} of {STEPS_LIMIT} </p>
     
-          {/* Progress bar */}
-          <Progress
-            value={(currentStep / STEPS_LIMIT) * 100}
-            className="w-full"
-          />
     
           {/* Step content */}
-          <div className="mt-6">
+          <div className="mt-6 min-h-[280px] flex flex-col justify-center">
             {currentStep === 1 &&  <IngredientPreferences />}
             {currentStep === 2 && <HealthDetails />}
             {currentStep === 3 && <HealthGoal />}
@@ -53,13 +48,16 @@ function CreateAccount() {
     
           {/* Navigation buttons */}
           <div className="flex justify-between mt-4">
+            {currentStep > 1 ? (
             <button
               onClick={handlePreviousStep}
-              disabled={currentStep === 0}
               className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
             >
               ← Previous
             </button>
+            ) : (
+              <div className="w-[100px]" /> // This empty div holds space for alignment
+            )}
     
             {currentStep < STEPS_LIMIT && (
               <button
@@ -71,6 +69,14 @@ function CreateAccount() {
               </button>
             )}
           </div>
+          
+
+          {/* Progress bar */}
+          <Progress
+            value={((currentStep - 1) / (STEPS_LIMIT - 1)) * 100}
+            className="w-full"
+          />
+
     
           {/* Show Create Account Firebase button only at final step */}
           <div className="text-center mt-4">

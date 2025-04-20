@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AccountContext } from "../AccountContext";
 
 function IngredientPreferences() {
     
-    const [ingredients, setIngredients] = useState("");
+    const [ingredients, setIngredients] = useState(""); //local state to track the input
+
+    const {updateFormData} = useContext(AccountContext) // global context to update form data
+
+    // sync input with global context form data
+    useEffect (() => {
+        updateFormData({ ingredientPreferences: ingredients});
+    }, [ingredients]);
     
     return (
     <div className="text-center">
         <h1 className="text-xl font-semibold text-center text-green-700">
-        Hi there! Let’s begin by setting your ingredient preferences.
+            Hi there! Let’s begin by setting your ingredient preferences.
         </h1>
         <br/>
 
