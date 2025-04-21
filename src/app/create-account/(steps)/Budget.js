@@ -1,10 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AccountContext } from "../AccountContext";
+
 
 function Budget() {
+    const { formData, updateFormData } = useContext(AccountContext); // access formData and updater from context
+    const [budget, setBudget] = useState(formData.budget || "");
 
-    const [budget, setBudget] = useState("");
+    // push updates into shared context on every change
+    useEffect(() => {
+        updateFormData({ budget });
+    }, [budget]);
 
     return (
         <div className="space-y-6">
@@ -34,7 +41,7 @@ function Budget() {
             </div>
 
             
-            {/* TODO: Store 'budget' value in global context or send to backend */}
+            
         </div>
     );
 }

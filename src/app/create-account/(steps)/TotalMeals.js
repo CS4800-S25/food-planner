@@ -1,10 +1,17 @@
 "use client"; 
 
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AccountContext } from "../AccountContext";
 
 function TotalMeals() {
 
-    const [meals, setMeals] = useState("");
+    const { formData, updateFormData } = useContext(AccountContext);
+    const [mealsPerDay, setMeals] = useState(formData.numberOfMeals || "");
+
+    // push updates to shared context whenever value changes
+    useEffect(() => {
+        updateFormData({ numberOfMeals: mealsPerDay });
+    }, [mealsPerDay]);
 
     return (
         <div className="space-y-6">
@@ -15,27 +22,25 @@ function TotalMeals() {
 
             {/* Description */}
             <p className="text-center text-gray-600">
-                We'll use this to build your weekly meal plan.
+                We'll use this to build your meal plan.
             </p>
 
             {/* Input field */}
             <div>
                 <label className="block text-gray-700 font-medium mb-1">
-                    Number of Meals per Day
+                    Number of Meals 
                 </label>
                 <input
                     type="number"
                     min={1}
                     max={6}
-                    value={meals}
+                    value={mealsPerDay}
                     onChange={(e) => setMeals(e.target.value)}
                     placeholder="e.g. 3"
                     className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-lime-300"
                 />
             </div>
 
-            {/* Later store this in context */}
-            {/* TODO: Hook 'meals' into shared context */}
         </div>
     );
 }

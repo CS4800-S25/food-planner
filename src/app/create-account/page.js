@@ -8,7 +8,7 @@ import HealthDetails from "./(steps)/HealthDetails";
 import HealthGoal from "./(steps)/HealthGoal";
 import TotalMeals from "./(steps)/TotalMeals";
 import Budget from "./(steps)/Budget";
-import CreateAccountFirebase from "./CreateAccountFirebase";
+import FinalizeAccount from "./FinalizeAccount";
 
 function CreateAccount() {
     const { currentStep, setCurrentStep } = useContext(AccountContext); //currentStep and its setter from context
@@ -29,7 +29,8 @@ function CreateAccount() {
           <h1 className="text-2xl font-bold text-center">Let's Personalize Your Meal Plan</h1>
           <p className="text-center text-gray-600">Step {currentStep} of {STEPS_LIMIT} </p>
     
-    
+           
+
           {/* Step content */}
           <div className="mt-6 min-h-[280px] flex flex-col justify-center">
             {currentStep === 1 &&  <IngredientPreferences />}
@@ -37,14 +38,12 @@ function CreateAccount() {
             {currentStep === 3 && <HealthGoal />}
             {currentStep === 4 && <TotalMeals />}
             {currentStep === 5 && <Budget />}
+            {currentStep === 6 && <FinalizeAccount />}
           </div>
-    
-          {/* Success message at final step */}
-          {currentStep === STEPS_LIMIT && (
-            <div className="text-center text-green-600 font-semibold text-xl">
-              Account Created Successfully!
-            </div>
-          )}
+
+          
+
+
     
           {/* Navigation buttons */}
           <div className="flex justify-between mt-4">
@@ -78,18 +77,17 @@ function CreateAccount() {
           />
 
     
-          {/* Show Create Account Firebase button only at final step */}
-          <div className="text-center mt-4">
-            {currentStep === STEPS_LIMIT && <CreateAccountFirebase />}
-          </div>
-    
           {/* Back to homepage */}
+          {currentStep !== STEPS_LIMIT && ( 
           <div className="text-center mt-6">
             <Link href="/" className="text-blue-600 underline">
               Return to Home Page
             </Link>
           </div>
+          )}
+
         </div>
+        
       );
 }
 

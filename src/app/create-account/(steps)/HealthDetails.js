@@ -40,8 +40,7 @@ function HealthDetails() {
                     className="w-full border border-gray-300 rounded px-4 py-2 min-h-[120px] resize-y focus:outline-none focus:ring-2 focus:ring-lime-300"
                 />
             </div>
-            {/*  Reminder for future state connection */}
-            {/* TODO: Store this data in AccountContext later */}
+            
         </div>
     );
 }
