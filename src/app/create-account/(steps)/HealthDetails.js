@@ -17,6 +17,23 @@ function HealthDetails() {
     }, [notes]);
 
     return (
+
+        <div className="relative w-full min-h-[200px]">
+        {/* Icons positioned absolutely outside the card */}
+        <img
+          src="/step-visuals/2-smoothie.png"
+          alt="Avocado"
+          className="absolute top-[40px] -left-[110px] w-[100px] hidden md:block z-10 pointer-events-non animate-wiggle"
+        />
+      
+        <img
+          src="/step-visuals/2-allergy.png"
+          alt="Red Pepper"
+          className="absolute top-[52px] -right-[115px] w-[110px] hidden md:block z-10 pointer-events-none animate-wiggle"
+        />
+
+
+
         <div className="space-y-6">
             {/* Section Title */}
             <h2 className="text-xl font-semibold text-center text-lime-700">
@@ -42,6 +59,7 @@ function HealthDetails() {
             </div>
             
         </div>
+    </div>
     );
 }
 

@@ -13,7 +13,23 @@ function IngredientPreferences() {
     }, [ingredients]);
     
     return (
+
+     <div className="relative w-full min-h-[200px]">
+        {/* Icons positioned absolutely outside the card */}
+        <img
+          src="/step-visuals/1-avocado.png"
+          alt="Avocado"
+          className="absolute top-[40px] -left-[110px] w-[100px] hidden md:block z-10 pointer-events-non animate-wiggle"
+        />
+      
+        <img
+          src="/step-visuals/1-pepper.png"
+          alt="Red Pepper"
+          className="absolute top-[40px] -right-[110px] w-[100px] hidden md:block z-10 pointer-events-none animate-wiggle"
+        />
+
     <div className="text-center">
+
         <h1 className="text-xl font-semibold text-center text-green-700">
             Hi there! Let’s begin by setting your ingredient preferences.
         </h1>
@@ -27,7 +43,7 @@ function IngredientPreferences() {
             placeholder="Enter ingredients you'd like to include:"
         />
 
-
+     </div>
     </div>
 
     );
