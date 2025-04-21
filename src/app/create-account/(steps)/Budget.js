@@ -11,13 +11,13 @@ function Budget() {
     // push updates into shared context on every change
     useEffect(() => {
         updateFormData({ budget });
-    }, [budget]);
+    }, [budget, updateFormData]);
 
     return (
         <div className="space-y-6">
             {/* Step title */}
             <h2 className="text-xl font-semibold text-center text-lime-700">
-                What's your daily food budget? 
+                What&apos;s your daily food budget? 
             </h2>
 
             {/* Description text */}

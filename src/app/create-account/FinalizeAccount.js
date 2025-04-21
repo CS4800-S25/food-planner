@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { collection, addDoc } from "firebase/firestore";
@@ -10,8 +10,8 @@ import db from "@/lib/firebase";
 function FinalizeAccount(){
     const { data: session } = useSession();  // user session info from google sign-in
     const { formData } = useContext(AccountContext); // qll preferences entered in the steps
-    const [loading, setLoading] = useState(true);   // controls loading animation
-    const [statusMessage, setStatusMessage] = useState("Generating your personalized meals using AI...");
+    // const [loading, setLoading] = useState(true);   // controls loading animation
+    // const [statusMessage, setStatusMessage] = useState("Generating your personalized meals using AI...");
     const router = useRouter();            // for redirecting the user
 
 
