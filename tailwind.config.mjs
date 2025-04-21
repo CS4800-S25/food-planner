@@ -54,7 +54,17 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		
+		animation: {
+			wiggle: "wiggle 1.5s ease-in-out infinite",
+		  },
+		keyframes: {
+			wiggle: {
+			  "0%, 100%": { transform: "rotate(-3deg)" },
+			  "50%": { transform: "rotate(3deg)" },
+			},
+		},
   	}
   },
   plugins: [require("tailwindcss-animate")],
