@@ -8,7 +8,7 @@ import HealthDetails from "./(steps)/HealthDetails";
 import HealthGoal from "./(steps)/HealthGoal";
 import TotalMeals from "./(steps)/TotalMeals";
 import Budget from "./(steps)/Budget";
-import CreateAccountFirebase from "./CreateAccountFirebase";
+import FinalizeAccount from "./FinalizeAccount";
 
 function CreateAccount() {
     const { currentStep, setCurrentStep } = useContext(AccountContext); //currentStep and its setter from context
@@ -38,13 +38,20 @@ function CreateAccount() {
             {currentStep === 4 && <TotalMeals />}
             {currentStep === 5 && <Budget />}
           </div>
-    
-          {/* Success message at final step */}
+
           {currentStep === STEPS_LIMIT && (
-            <div className="text-center text-green-600 font-semibold text-xl">
-              Account Created Successfully!
+            <div className="text-center">
+            <p className="text-lg font-semibold text-green-700 animate-pulse">
+              Generating your personalized meals using AI...
+            </p>
             </div>
           )}
+
+          {/* Show Create Account Firebase button only at final step */}
+          <div className="text-center mt-4">
+            {currentStep === STEPS_LIMIT && < FinalizeAccount />}
+          </div>
+
     
           {/* Navigation buttons */}
           <div className="flex justify-between mt-4">
@@ -78,18 +85,17 @@ function CreateAccount() {
           />
 
     
-          {/* Show Create Account Firebase button only at final step */}
-          <div className="text-center mt-4">
-            {currentStep === STEPS_LIMIT && <CreateAccountFirebase />}
-          </div>
-    
           {/* Back to homepage */}
+          {currentStep !== STEPS_LIMIT && ( 
           <div className="text-center mt-6">
             <Link href="/" className="text-blue-600 underline">
               Return to Home Page
             </Link>
           </div>
+          )}
+
         </div>
+        
       );
 }
 
