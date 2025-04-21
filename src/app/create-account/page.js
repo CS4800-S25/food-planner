@@ -29,7 +29,8 @@ function CreateAccount() {
           <h1 className="text-2xl font-bold text-center">Let's Personalize Your Meal Plan</h1>
           <p className="text-center text-gray-600">Step {currentStep} of {STEPS_LIMIT} </p>
     
-    
+           
+
           {/* Step content */}
           <div className="mt-6 min-h-[280px] flex flex-col justify-center">
             {currentStep === 1 &&  <IngredientPreferences />}
@@ -37,20 +38,11 @@ function CreateAccount() {
             {currentStep === 3 && <HealthGoal />}
             {currentStep === 4 && <TotalMeals />}
             {currentStep === 5 && <Budget />}
+            {currentStep === 6 && <FinalizeAccount />}
           </div>
 
-          {currentStep === STEPS_LIMIT && (
-            <div className="text-center">
-            <p className="text-lg font-semibold text-green-700 animate-pulse">
-              Generating your personalized meals using AI...
-            </p>
-            </div>
-          )}
+          
 
-          {/* Show Create Account Firebase button only at final step */}
-          <div className="text-center mt-4">
-            {currentStep === STEPS_LIMIT && < FinalizeAccount />}
-          </div>
 
     
           {/* Navigation buttons */}

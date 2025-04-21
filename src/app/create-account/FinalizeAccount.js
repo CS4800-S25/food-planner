@@ -11,6 +11,7 @@ function FinalizeAccount(){
     const { data: session } = useSession();  // user session info from google sign-in
     const { formData } = useContext(AccountContext); // qll preferences entered in the steps
     const [loading, setLoading] = useState(true);   // controls loading animation
+    const [statusMessage, setStatusMessage] = useState("Generating your personalized meals using AI...");
     const router = useRouter();            // for redirecting the user
 
 
@@ -33,6 +34,8 @@ function FinalizeAccount(){
     
             await addDoc(collection(db, "userMealPlans"), docData);
             console.log("Saved to Firebase!");
+            
+            setStatusMessage("All done! Redirecting...");
 
             // small delay before redirect
             setTimeout(() => {
@@ -41,9 +44,8 @@ function FinalizeAccount(){
 
         } catch (error) {
             console.error("Error saving preferences:", error);
-          } finally {
-            setLoading(false); // Stop loading animation
-          }
+            setStatusMessage("Failed to save. Please try again.");
+          } 
         };
         
         savePreferencesAndRedirect();
@@ -51,7 +53,8 @@ function FinalizeAccount(){
 
 
     return (
-        <div className="text-center text-lg text-lime-600 mt-10">
+        <div className="text-center text-green-700 font-semibold text-lg animate-pulse">
+            <p> Generating your personalized meals using AI...</p>
             <p> All done! Redirecting...</p>
         </div>
     );
