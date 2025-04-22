@@ -10,7 +10,8 @@ function IngredientPreferences() {
     // sync input with global context form data
     useEffect(() => {
         updateFormData({ ingredientPreferences: ingredients });
-    }, [ingredients, updateFormData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ingredients]);
 
     return (
         <div className="relative w-full min-h-[200px]">

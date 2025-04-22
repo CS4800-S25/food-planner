@@ -13,7 +13,7 @@ function HealthDetails() {
     // when notes change, sync to global formData
     useEffect(() => {
         updateFormData({ healthDetails: notes });
-    }, [notes, updateFormData]);
+    }, [notes]);
 
     return (
         <div className="relative w-full min-h-[200px]">

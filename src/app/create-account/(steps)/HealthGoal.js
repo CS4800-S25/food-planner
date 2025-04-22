@@ -11,7 +11,8 @@ function HealthGoal() {
     // Update global form data when local goal changes
     useEffect(() => {
         updateFormData({ healthGoal: goal });
-    }, [goal, updateFormData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [goal]);
 
     return (
         <div className="space-y-6">

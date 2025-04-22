@@ -10,7 +10,8 @@ function TotalMeals() {
     // push updates to shared context whenever value changes
     useEffect(() => {
         updateFormData({ numberOfMeals: mealsPerDay });
-    }, [mealsPerDay, updateFormData]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mealsPerDay]);
 
     return (
         <div className="space-y-6">
