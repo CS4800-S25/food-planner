@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, Suspense } from "react"; //to create input states
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -7,6 +6,29 @@ import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+
+function SearchParamsHandler({ setShowMessage }) {
+    const params = useSearchParams();
+    const message = params.get("message");
+    const { status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (status === "unauthenticated" && message === "signedout") {
+            setShowMessage(true);
+
+            const timer = setTimeout(() => {
+                setShowMessage(false);
+
+                router.replace("/login");
+            }, 2000);
+
+            return () => clearTimeout(timer); // cleanup if unmounted
+        }
+    }, [status, message, router, setShowMessage]);
+
+    return null;
+}
 
 function LoginPage() {
     const tagLines = [
@@ -28,32 +50,15 @@ function LoginPage() {
         signIn("google", { callbackUrl: "/" });
     };
 
-    const { status } = useSession();
-    const params = useSearchParams();
-    const message = params.get("message");
-    const router = useRouter();
-
     const [showMessage, setShowMessage] = useState(false);
 
-    useEffect(() => {
-        if (status === "unauthenticated" && message === "signedout") {
-            setShowMessage(true);
-
-            const timer = setTimeout(() => {
-                setShowMessage(false);
-
-                router.replace("/login");
-            }, 2000);
-
-            return () => clearTimeout(timer); // cleanup if unmounted
-        }
-    }, [status, message, router]);
     return (
         <main
             className="min-h-screen flex items-start justify-center pt-36 p-6 bg-cover bg-center"
             style={{ backgroundImage: "url('/images/background.png')" }}
         >
             <Suspense fallback={<div>Loading...</div>}>
+                <SearchParamsHandler setShowMessage={setShowMessage} />
                 <Card className="w-full max-w-3xl bg-white border-2 border-lime-100 shadow-xl p-20">
                     <CardHeader>
                         <CardTitle className="text-center text-3xl text-green-700 font-semibold">
