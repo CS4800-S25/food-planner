@@ -23,72 +23,66 @@ function CreateAccount() {
     const handlePreviousStep = () => {
         setCurrentStep((prevStep) => prevStep - 1);
     };
-    
+
     return (
         <div className="max-w-3xl mx-auto pt-32 min-h-[600px] space-y-6 p-6 border rounded shadow bg-white">
-          <h1 className="text-2xl font-bold text-center">Let's Personalize Your Meal Plan</h1>
-          <p className="text-center text-gray-600">Step {currentStep} of {STEPS_LIMIT} </p>
-    
-           
+            <h1 className="text-2xl font-bold text-center">
+                Let&apos;s Personalize Your Meal Plan
+            </h1>
+            <p className="text-center text-gray-600">
+                Step {currentStep} of {STEPS_LIMIT}{" "}
+            </p>
 
-          {/* Step content */}
-          <div className="mt-6 min-h-[280px] flex flex-col justify-center">
-            {currentStep === 1 &&  <IngredientPreferences />}
-            {currentStep === 2 && <HealthDetails />}
-            {currentStep === 3 && <HealthGoal />}
-            {currentStep === 4 && <TotalMeals />}
-            {currentStep === 5 && <Budget />}
-            {currentStep === 6 && <FinalizeAccount />}
-          </div>
+            {/* Step content */}
+            <div className="mt-6 min-h-[280px] flex flex-col justify-center">
+                {currentStep === 1 && <IngredientPreferences />}
+                {currentStep === 2 && <HealthDetails />}
+                {currentStep === 3 && <HealthGoal />}
+                {currentStep === 4 && <TotalMeals />}
+                {currentStep === 5 && <Budget />}
+                {currentStep === 6 && <FinalizeAccount />}
+            </div>
 
-          
+            {/* Navigation buttons */}
+            <div className="flex justify-between mt-4">
+                {currentStep > 1 ? (
+                    <button
+                        onClick={handlePreviousStep}
+                        className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
+                    >
+                        ← Previous
+                    </button>
+                ) : (
+                    <div className="w-[100px]" /> // This empty div holds space for alignment
+                )}
 
+                {currentStep < STEPS_LIMIT && (
+                    <button
+                        onClick={handleNextStep}
+                        disabled={currentStep === STEPS_LIMIT}
+                        className="bg-lime-500 hover:bg-lime-600 text-white px-4 py-2 rounded"
+                    >
+                        Next →
+                    </button>
+                )}
+            </div>
 
-    
-          {/* Navigation buttons */}
-          <div className="flex justify-between mt-4">
-            {currentStep > 1 ? (
-            <button
-              onClick={handlePreviousStep}
-              className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
-            >
-              ← Previous
-            </button>
-            ) : (
-              <div className="w-[100px]" /> // This empty div holds space for alignment
+            {/* Progress bar */}
+            <Progress
+                value={((currentStep - 1) / (STEPS_LIMIT - 1)) * 100}
+                className="w-full"
+            />
+
+            {/* Back to homepage */}
+            {currentStep !== STEPS_LIMIT && (
+                <div className="text-center mt-6">
+                    <Link href="/" className="text-blue-600 underline">
+                        Return to Home Page
+                    </Link>
+                </div>
             )}
-    
-            {currentStep < STEPS_LIMIT && (
-              <button
-                onClick={handleNextStep}
-                disabled={currentStep === STEPS_LIMIT}
-                className="bg-lime-500 hover:bg-lime-600 text-white px-4 py-2 rounded"
-              >
-                Next →
-              </button>
-            )}
-          </div>
-          
-
-          {/* Progress bar */}
-          <Progress
-            value={((currentStep - 1) / (STEPS_LIMIT - 1)) * 100}
-            className="w-full"
-          />
-
-    
-          {/* Back to homepage */}
-          {currentStep !== STEPS_LIMIT && ( 
-          <div className="text-center mt-6">
-            <Link href="/" className="text-blue-600 underline">
-              Return to Home Page
-            </Link>
-          </div>
-          )}
-
         </div>
-        
-      );
+    );
 }
 
 export default function Page() {

@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { auth, signOut } from "@/app/auth";
+import { auth } from "@/app/auth";
 import { redirect } from "next/navigation";
-
 import SignOutButton from "./SignOutButton";
 import GenerateLogic from "./GenerateMealLogic";
 
@@ -29,10 +28,7 @@ export async function UserAvatar() {
 }
 
 export default async function HomePage() {
-
     const session = await auth();
-
-    
 
     if (!session?.user) {
         redirect("/login");
@@ -54,9 +50,9 @@ export default async function HomePage() {
             <Link href="/meal/KBBQ">
                 Meal Info Page called &apos;KBBQ&apos;
             </Link>
-            
+
             <br />
-            <SignOutButton/>
+            <SignOutButton />
             <br />
         </main>
     );
