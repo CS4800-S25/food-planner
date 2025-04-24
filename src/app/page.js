@@ -10,6 +10,7 @@ export async function UserAvatar() {
 
     if (!session?.user) return null;
 
+    console.log("User session:", session.user);
     return (
         <div className="flex flex-col items-center justify-center mt-4">
             <h2 className="text-2xl font-bold text-center">User Info</h2>
