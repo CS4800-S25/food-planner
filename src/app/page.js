@@ -4,8 +4,9 @@ import { auth } from "@/app/auth";
 import { redirect } from "next/navigation";
 import SignOutButton from "./SignOutButton";
 import GenerateLogic from "./GenerateMealLogic";
+import MealButton from "./MealButton";
 
-export async function UserAvatar() {
+async function UserAvatar() {
     const session = await auth();
 
     if (!session?.user) return null;
@@ -54,6 +55,7 @@ export default async function HomePage() {
             <br />
             <SignOutButton />
             <br />
+            <MealButton />
         </main>
     );
 }
