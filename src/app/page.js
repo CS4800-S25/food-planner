@@ -4,20 +4,20 @@ import { auth } from "@/app/auth";
 import { redirect } from "next/navigation";
 import SignOutButton from "./SignOutButton";
 import GenerateLogic from "./GenerateMealLogic";
+import Meals from "./Meals";
 
-export async function UserAvatar() {
-    const session = await auth();
-
-    if (!session?.user) return null;
-
-    console.log("User session:", session.user);
+export async function UserAvatar({
+    userName = "User",
+    userEmail = "user@gmail.com",
+    userImage = "https://via.placeholder.com/50",
+}) {
     return (
         <div className="flex flex-col items-center justify-center mt-4">
             <h2 className="text-2xl font-bold text-center">User Info</h2>
-            <p className="text-center">{session.user.name}</p>
-            <p className="text-center">{session.user.email}</p>
+            <p className="text-center">{userName}</p>
+            <p className="text-center">{userEmail}</p>
             <Image
-                src={session.user.image}
+                src={userImage}
                 alt="User Avatar"
                 width={50}
                 height={50}
@@ -37,7 +37,11 @@ export default async function HomePage() {
 
     return (
         <main>
-            <UserAvatar />
+            <UserAvatar
+                userName={session.user.name}
+                userEmail={session.user.email}
+                userImage={session.user.image}
+            />
             <h1 className="text-3xl font-bold text-center">Home Page</h1>
             <p className="text-center">Welcome to the Food Planner App.</p>
 
@@ -55,6 +59,7 @@ export default async function HomePage() {
             <br />
             <SignOutButton />
             <br />
+            <Meals email={session.user.email} />
         </main>
     );
 }
