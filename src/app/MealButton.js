@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React from "react";
 async function getRecipeInfo(recipeName) {
     let apiFoodRequest = await fetch(`/api/recipe?recipeName=${recipeName}`);
 
@@ -9,7 +8,7 @@ async function getRecipeInfo(recipeName) {
 }
 function MealButton() {
     return (
-        <Button varient="outline" onClick={() => getRecipeInfo("Fried Rice")}>
+        <Button varient="outline" onClick={() => getRecipeInfo("Chinese Salad")}>
             Get Meal
         </Button>
     );
