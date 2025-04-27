@@ -1,6 +1,13 @@
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+
+
 
 /* @media (prefers-color-scheme: dark) {
   :root {
