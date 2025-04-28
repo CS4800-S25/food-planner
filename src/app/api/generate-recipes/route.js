@@ -25,7 +25,7 @@ export async function POST(request) {
                 content: [
                     {
                         type: "input_text",
-                        text: "Generate a list of recipes that align with the given factors: budget, health details, health goal, ingredient preference, and number of meals. Ensure that the number of recipes generated matches the number of meals specified.\n\n# Steps\n\n1. **Budget Consideration**: Identify ingredients and recipes that fit within the provided budget.\n2. **Health Details and Goal**: Consider the health details and goals, eg. low carb, high protein, vegetarian, etc., to align recipes with dietary needs.\n3. **Ingredient Preference**: Take into account any preferred or necessary ingredients to include in the recipes.\n4. **Match Number of Meals**: Generate a corresponding number of recipes to the specified number of meals.\n\n# Examples\n\n**Input**\n- Budget: $50\n- Health Details: Low carb\n- Health Goal: Weight loss\n- Ingredient Preference: Chicken, spinach\n- Number of Meals: 3\n\n# Notes\n\n- Ensure the total estimated cost of all meals does not exceed the budget provided.\n- Consider rotating recipes for variety if the same ingredient preference is present.",
+                        text: 'Generate a list of recipes that align with the given factors: budget, health details, health goal, ingredient preference, and number of meals. Ensure that the number of recipes generated matches the number of meals specified.\n\n# Steps\n\n1. **Budget Consideration**: Identify ingredients and recipes that fit within the provided budget.\n2. **Health Details and Goal**: Consider the health details and goals, eg. low carb, high protein, vegetarian, etc., to align recipes with dietary needs.\n3. **Ingredient Preference**: Take into account any preferred or necessary ingredients to include in the recipes.\n4. **Match Number of Meals**: Generate a corresponding number of recipes to the specified number of meals.\n\n# Output Format\n\n- A JSON object with keys for each recipe:\n  - Name\n  - Ingredients\n  - Instructions\n  - Estimated Cost (if applicable)\nExample output structure:\n```\n{\n  "recipes": [\n    {\n      "name": "Example Dish",\n      "ingredients": ["ingredient1", "ingredient2"],\n      "instructions": "Step-by-step cooking instructions.",\n      "estimated_cost": "Approximate cost",\n    },\n    ...\n  ]\n}\n```\n\n# Examples\n\n**Input**\n- Budget: $50\n- Health Details: Low carb\n- Health Goal: Weight loss\n- Ingredient Preference: Chicken, spinach\n- Number of Meals: 3\n\n**Output**\n```\n{\n  "recipes": [\n    {\n      "name": "Chicken and Spinach Stir-fry",\n      "ingredients": ["chicken breast", "spinach", "garlic", "olive oil"],\n      "instructions": "Sauté garlic in olive oil, add chicken until cooked, then add spinach until wilted.",\n      "estimated_cost": "$12"\n    },\n    {\n      "name": "Spicy Grilled Chicken",\n      "ingredients": ["chicken thighs", "chili powder", "lime"],\n      "instructions": "Marinate chicken with chili powder and lime, then grill until cooked.",\n      "estimated_cost": "$15"\n    },\n    {\n      "name": "Spinach Omelette",\n      "ingredients": ["eggs", "spinach", "cheese"],\n      "instructions": "Whisk eggs, add spinach and cheese, cook in a pan until set.",\n      "estimated_cost": "$10"\n    }\n  ]\n}\n```\n\n# Notes\n\n- Ensure the total estimated cost of all meals does not exceed the budget provided.\n- Consider rotating recipes for variety if the same ingredient preference is present.',
                     },
                 ],
             },
@@ -47,7 +47,7 @@ export async function POST(request) {
                     type: "object",
                     required: ["recipe_list"],
                     properties: {
-                        final_answer: {
+                        recipe_list: {
                             type: "array",
                             items: {
                                 type: "object",
@@ -95,5 +95,10 @@ export async function POST(request) {
         store: false,
     });
 
-    // const { recipe_list } = response.data;
+    return new Response(JSON.stringify(response.output_text), {
+        status: 200,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
 }
