@@ -1,33 +1,16 @@
 import Link from "next/link";
-import Image from "next/image";
+//import Image from "next/image";
 import { auth } from "@/app/auth";
 import { redirect } from "next/navigation";
 import SignOutButton from "./SignOutButton";
-import GenerateLogic from "./GenerateMealLogic";
-import MealCard from "@/components/MealCard";
-import Meals from "./Meals";
+import GenerateMealLogic from "./GenerateMealLogic";
+//import MealCard from "@/components/MealCard";
+//import Meals from "./Meals";
+import Navbar from "@/components/Navbar";
+import MealsCarousel from "@/components/MealsCarousel";
 
-export async function UserAvatar({
-    userName = "User",
-    userEmail = "user@gmail.com",
-    userImage = "https://via.placeholder.com/50",
-}) {
-    return (
-        <div className="flex flex-col items-center justify-center mt-4">
-            <h2 className="text-2xl font-bold text-center">User Info</h2>
-            <p className="text-center">{userName}</p>
-            <p className="text-center">{userEmail}</p>
-            <Image
-                src={userImage}
-                alt="User Avatar"
-                width={50}
-                height={50}
-                unoptimized
-                className="rounded-full"
-            />
-        </div>
-    );
-}
+
+
 
 export default async function HomePage() {
     const session = await auth();
@@ -37,31 +20,33 @@ export default async function HomePage() {
     }
 
     return (
-        <main>
-            <UserAvatar
+        <main className="flex flex-col min-h-screen">
+            {/* Top Navbar */}
+            <Navbar
                 userName={session.user.name}
                 userEmail={session.user.email}
                 userImage={session.user.image}
             />
-            <h1 className="text-3xl font-bold text-center">Home Page</h1>
-            <p className="text-center">Welcome to the Food Planner App.</p>
 
-            {/* Show conditional content: Generate button or meals */}
-            <GenerateLogic />
-            <br />
-            <Link href="/account">Account Page</Link>
-            <br />
-            <Link href="/create-account">Create Account Page</Link>
-            <br />
-            <Link href="/meal/KBBQ">
-                Meal Info Page called &apos;KBBQ&apos;
-            </Link>
+            {/* Main Content */}
+            <div className="flex-1 container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold mb-6 text-center">Your Saved Meals</h1>
 
-            <br />
-            <SignOutButton />
-            <br />
-            <MealCard title="My Meal" description="Deez Nuts" servingSize={4} price={40}/>
-            <Meals email={session.user.email} />
+                <GenerateMealLogic email={session.user.email} />
+                {/* Carousel */}
+                <MealsCarousel email={session.user.email} />
+
+                {/* Update Preferences and Sign Out */}
+                <div className="mt-10 flex flex-col items-center">
+                    <Link href="/account">
+                        <button className="bg-blue-500 text-white px-6 py-3 rounded-lg mb-4">
+                            Update Preferences
+                        </button>
+                    </Link>
+
+                    <SignOutButton />
+                </div>
+            </div>
         </main>
     );
 }
