@@ -14,7 +14,7 @@ function MealCard({
     return (
         <Card
             className="text-center p-4 shadow-lg rounded-lg bg-white hover:shadow-xl transition-shadow duration-300 cursor-pointer flex flex-col items-center justify-center"
-            onClick={() => router.push(`/meal/${title}`)}
+            //onClick={() => router.push(`/meal/${title}`)}
         >
             <h2 className="text-2xl font-bold">{title}</h2>
             <Image

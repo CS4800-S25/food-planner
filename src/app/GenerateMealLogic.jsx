@@ -41,7 +41,7 @@ export default function GenerateMealLogic({ email}) {
     <div className="mt-6 text-center">
             {isNewUser ? (
                 <Button
-                    className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-6 py-4"
+                    className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-10 py-10"
                     onClick={handleGenerate}
                 >
                     Generate Meal
@@ -49,6 +49,7 @@ export default function GenerateMealLogic({ email}) {
             ) : null}
 
             {/* Dev Reset Button */}
+            <p></p>
             <Button
                 variant="outline"
                 className="mt-4"
