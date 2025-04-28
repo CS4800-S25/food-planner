@@ -4,6 +4,8 @@ import Slider from "react-slick";
 import MealCard from "@/components/MealCard";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMeals } from "@/lib/fetchMeals";
+import MealModal from "@/components/MealModal";
+import { useState } from "react";
 
 export default function MealsCarousel({ email }) {
     const { data: meals, isLoading, error } = useQuery({
@@ -11,6 +13,32 @@ export default function MealsCarousel({ email }) {
         queryFn: () => fetchMeals(email),
         refetchOnWindowFocus: false,
     });
+
+    const [selectedMeal, setSelectedMeal] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = (meal) => {
+        const mealWithDummyIngredients = {
+            title: meal.title || "Sample Meal",
+            description: meal.description || "Sample description",
+            price: meal.price || 25,
+            servingSize: meal.servingSize || 2,
+            ingredients: meal.ingredients || [
+                { name: "Beef", price: 15 },
+                { name: "Lettuce", price: 2 },
+                { name: "Kimchi", price: 3 },
+                { name: "Rice", price: 5 },
+            ],
+        };
+
+        setSelectedMeal(mealWithDummyIngredients);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedMeal(null);
+        setIsModalOpen(false);
+    };
 
     if (isLoading) {
         return <div>Loading meals...</div>;
@@ -20,11 +48,14 @@ export default function MealsCarousel({ email }) {
         return <div>Error loading meals.</div>;
     
     }
+    
+    // If meals is empty, show a message
 
     if (meals.length === 0) {
         return (
-            <div className="text-center mt-10">
+            <div className="text-center mt-20">
                 <p className="text-xl text-gray-600">No meals yet. Please generate your meal plan!</p>
+               
             </div>
         );
     }
@@ -55,7 +86,7 @@ export default function MealsCarousel({ email }) {
         <div className="mt-8">
             <Slider {...settings}>
                 {meals.map((meal, index) => (
-                    <div key={index} className="px-2">
+                    <div key={index} className="px-2" onClick={() => openModal(meal)}>
                         <MealCard
                             title={meal.title}
                             description={meal.description}
@@ -65,6 +96,7 @@ export default function MealsCarousel({ email }) {
                     </div>
                 ))}
             </Slider>
+            <MealModal isOpen={isModalOpen} closeModal={closeModal} meal={selectedMeal} />
         </div>
     );
 }
