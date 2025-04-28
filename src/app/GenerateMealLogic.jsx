@@ -1,61 +1,61 @@
 "use client"; // client component
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchMeals } from "@/lib/fetchMeals";
+import { Button } from "@/components/ui/button";
+import { deleteMeals }  from "@/lib/deleteMeals";
 
-export default function GenerateMealLogic() {
-  // Track if the user is new (hasn't completed meal plan setup)
-  const [isNewUser, setIsNewUser] = useState(false);
-
+export default function GenerateMealLogic({ email}) {
   const router = useRouter(); // Used to navigate to multi-step form
 
-  useEffect(() => {
-    // Check if user setup was completed before (mocked using localStorage)
-    const setupComplete = localStorage.getItem("setupComplete");
 
-    // If not found, this is a new user
-    if (!setupComplete) {
-      setIsNewUser(true);
+    const queryClient = useQueryClient(); // access cache manually
+
+    const { data: meals, isLoading, error } = useQuery({
+      queryKey: ["meals", email],
+      queryFn: () => fetchMeals(email),
+    });
+
+    if (isLoading) {
+      return <div>Loading meals...</div>;
     }
-  }, []);
 
+    if (error) {
+      return <div>Error loading meals.</div>;
+    }
+
+  const isNewUser = meals.length === 0;
   // Called when the "Generate" button is clicked
   const handleGenerate = () => {
-    localStorage.setItem("setupComplete", "true"); // Mark setup as done
-    router.push("/create-account"); // Redirect to multi-step form
+    router.push("/create-account"); // Go to multi-step form
+  };
+
+  const handleReset = async () => {
+    await deleteMeals(email); // delete from Firestore
+    await queryClient.invalidateQueries({ queryKey: ["meals", email] }); // clear local cache
+    router.refresh(); // reload page
   };
 
   return (
     <div className="mt-6 text-center">
-      {isNewUser ? (
-        // Show the "Generate" button if this is a new user
-        <Button
-          className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-6 py-4"
-          onClick={handleGenerate}
-        >
-          Generate Meal
-        </Button>
-      ) : (
-        // Otherwise, show placeholder meal plan data (R eplace with real cards later)
-        <div className="grid gap-4">
-          <p className="text-lg mb-4">Here’s your personalized meal plan:</p>
-          <div className="border p-4 rounded shadow bg-white">🍜 KBBQ</div>
-          <div className="border p-4 rounded shadow bg-white">🥗 Veggie Bowl</div>
-        </div>
-      )}
+            {isNewUser ? (
+                <Button
+                    className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-6 py-4"
+                    onClick={handleGenerate}
+                >
+                    Generate Meal
+                </Button>
+            ) : null}
 
-        
-        <Button              // REMOVE LATER,FOR DEV AND TESTING ONLY
-        variant="outline"
-        className="mt-4"
-        onClick={() => {
-        localStorage.removeItem("setupComplete");
-        location.reload();
-        }}
-        >
-         Reset User Status (Dev Only)
-        </Button>
-    </div>
+            {/* Dev Reset Button */}
+            <Button
+                variant="outline"
+                className="mt-4"
+                onClick={handleReset}
+            >
+                Reset User Status (Dev Only)
+            </Button>
+        </div>
   );
 }
