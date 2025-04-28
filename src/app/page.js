@@ -6,6 +6,7 @@ import SignOutButton from "./SignOutButton";
 import GenerateLogic from "./GenerateMealLogic";
 import MealCard from "@/components/MealCard";
 import Meals from "./Meals";
+import MealButton from "./MealButton";
 
 export async function UserAvatar({
     userName = "User",
@@ -62,6 +63,7 @@ export default async function HomePage() {
             <br />
             <MealCard title="My Meal" description="Deez Nuts" servingSize={4} price={40}/>
             <Meals email={session.user.email} />
+            <MealButton />
         </main>
     );
 }

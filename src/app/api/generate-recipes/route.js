@@ -1,5 +1,37 @@
 export const revalidate = 0; // Disable revalidation for this route
 import OpenAI from "openai";
+async function getRecipeFromAPI(recipeName) {
+    let foodRequest = await fetch(
+        `https://api.spoonacular.com/recipes/complexSearch?query=${recipeName}&number=1&addRecipeInformation=true`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": process.env.SPOONACULAR_API_KEY,
+            },
+        }
+    );
+    let apiResponse = await foodRequest.json();
+    console.log("FOOD API RESPONSE", apiResponse);
+    if (!apiResponse || apiResponse.results.length === 0) {
+        return {
+            recipeFound: false,
+        };
+    }
+    let { id, title, image, readyInMinutes, servings, pricePerServing } =
+        apiResponse.results[0];
+
+    return {
+        id,
+        title,
+        image,
+        readyInMinutes,
+        servings,
+        pricePerServing,
+        recipeFound: true,
+    };
+}
+
 export async function POST(request) {
     const res = await request.json();
     if (!res) {
@@ -95,10 +127,38 @@ export async function POST(request) {
         store: false,
     });
 
-    return new Response(JSON.stringify(response.output_text), {
-        status: 200,
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    let { recipe_list } = JSON.parse(response.output_text);
+    let recipes = await Promise.all(
+        recipe_list.map(async (recipe) => {
+            let { recipe_title, instructions, ingredients } = recipe;
+            let recipeDetails = await getRecipeFromAPI(recipe_title);
+            if (!recipeDetails.recipeFound) {
+                return {
+                    recipe_title,
+                    instructions,
+                    ingredients,
+                    error: "Recipe not found",
+                };
+            }
+
+            return {
+                ...recipeDetails,
+                instructions,
+                ingredients,
+            };
+        })
+    );
+
+    return new Response(
+        JSON.stringify({
+            recipes,
+            message: "Recipes generated successfully",
+        }),
+        {
+            status: 200,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
 }
