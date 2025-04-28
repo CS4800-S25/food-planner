@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { collection, addDoc } from "firebase/firestore";
 import { AccountContext } from "./AccountContext";
 import db from "@/lib/firebase";
+import { fetchUserInfo } from "@/lib/fetchUserInfo";
 
 function FinalizeAccount() {
     const { data: session } = useSession(); // user session info from google sign-in
@@ -26,18 +27,25 @@ function FinalizeAccount() {
 
             try {
                 // compose full document to be saved in firestore
-                const docData = {
-                    email: session.user.email,
-                    name: session.user.name,
-                    image: session.user.image,
-                    preferences: formData,
-                    timestamp: new Date(),
-                };
+                let checkUserExists = await fetchUserInfo(session.user.email);
+                if (checkUserExists) {
+                    console.log(
+                        "User already exists in Firestore. Skipping save."
+                    );
+                    setStatusMessage("Account already exists! Redirecting...");
+                } else {
+                    const docData = {
+                        email: session.user.email,
+                        name: session.user.name,
+                        image: session.user.image,
+                        preferences: formData,
+                        timestamp: new Date(),
+                    };
 
-                await addDoc(collection(db, "userMealPlans"), docData);
-                console.log("Saved to Firebase!");
-
-                setStatusMessage("All done! Redirecting...");
+                    await addDoc(collection(db, "userMealPlans"), docData);
+                    console.log("Saved to Firebase!");
+                    setStatusMessage("All done! Redirecting...");
+                }
 
                 // small delay before redirect
                 setTimeout(() => {
