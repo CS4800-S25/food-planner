@@ -12,12 +12,15 @@ import MealsCarousel from "@/components/MealsCarousel";
 
 
 
+
 export default async function HomePage() {
     const session = await auth();
 
     if (!session?.user) {
         redirect("/login");
     }
+
+    
 
     return (
         <main className="flex flex-col min-h-screen">
@@ -34,7 +37,7 @@ export default async function HomePage() {
 
                 <GenerateMealLogic email={session.user.email} />
                 {/* Carousel */}
-                <MealsCarousel email={session.user.email} />
+                <MealsCarousel  email={session.user.email} />
 
                 {/* Update Preferences and Sign Out */}
                 <div className="mt-10 flex flex-col items-center">

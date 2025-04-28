@@ -41,7 +41,7 @@ export default function MealsCarousel({ email }) {
     };
 
     if (isLoading) {
-        return <div>Loading meals...</div>;
+        return null;
     }
 
     if (error) {
