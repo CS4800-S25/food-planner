@@ -3,11 +3,12 @@
 import { useEffect, useContext, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { AccountContext } from "./AccountContext";
 import db from "@/lib/firebase";
 import { fetchUserInfo } from "@/lib/fetchUserInfo";
 import { useQueryClient } from "@tanstack/react-query";
+
 
 function FinalizeAccount() {
     const { data: session } = useSession(); // user session info from google sign-in
@@ -31,42 +32,37 @@ function FinalizeAccount() {
                 const userEmail = session.user.email;
                 console.log("User email:", userEmail);
                 console.log("Form data:", formData);
-
-
-                // compose full document to be saved in firestore
-                let checkUserExists = await fetchUserInfo(userEmail);
-                if (checkUserExists) {
-                    console.log(
-                        "User already exists in Firestore. Skipping save."
-                    );
-                    setStatusMessage("Account already exists! Redirecting...");
+            
+                const docData = {
+                    email: session.user.email,
+                    name: session.user.name,
+                    image: session.user.image,
+                    preferences: formData,
+                    timestamp: new Date(),
+                };
+            
+                const userData = await fetchUserInfo(userEmail);
+            
+                if (userData && userData.id) {
+                    // User exists, update their doc
+                    const userDocRef = doc(db, "userMealPlans", userData.id);
+                    await updateDoc(userDocRef, docData);
+                    console.log("Updated preferences in Firestore.");
+                    setStatusMessage("Preferences updated! Redirecting...");
                 } else {
-                    const docData = {
-                        email: session.user.email,
-                        name: session.user.name,
-                        image: session.user.image,
-                        preferences: formData,
-                        timestamp: new Date(),
-                    };
-
+                    // New user, create new doc
                     await addDoc(collection(db, "userMealPlans"), docData);
-                    console.log("Saved to Firebase!");
-                    setStatusMessage("All done! Redirecting...");
+                    console.log("Created new user document.");
+                    setStatusMessage("Preferences saved! Redirecting...");
                 }
-
+            
                 await queryClient.prefetchQuery({
                     queryKey: ["meals", userEmail],
                     queryFn: () => fetchMeals(userEmail),
-
                 });
-
-
-
-                // small delay before redirect
-                setTimeout(() => {
-                    router.push("/"); // Redirect to homepage
-                }, 2000);
-
+            
+                router.push("/");
+            
             } catch (error) {
                 console.error("Error saving preferences:", error);
                 setStatusMessage("Failed to save. Please try again.");
