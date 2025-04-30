@@ -2,8 +2,6 @@ export const revalidate = 0; // Disable revalidation for this route
 import OpenAI from "openai";
 async function getRecipeFromAPI(
     query, 
-    cuisine,
-    excludeCuisine, 
     diet, 
     intolerances, 
     includeIngredients, 
@@ -20,8 +18,6 @@ async function getRecipeFromAPI(
         instructionsRequired: true,
         minServingSize: "1"
     });
-    if (cuisine) params.append("cuisine", cuisine);
-    if (excludeCuisine) params.append("excludeCuisine", excludeCuisine);
     if (diet) params.append("diet", diet);
     if (intolerances) params.append("intolerances", intolerances);
     if (includeIngredients) params.append("includeIngredients", includeIngredients);
@@ -29,7 +25,6 @@ async function getRecipeFromAPI(
 
     // Make the API request
     const url = `https://api.spoonacular.com/recipes/complexSearch?${params.toString()}`;
-    console.log("FOOD API URL", url);
     const foodRequest = await fetch(url, {
         method: "GET",
         headers: {
@@ -90,7 +85,7 @@ export async function POST(request) {
     # STEPS
     1. Query Construction: 
     - Focus on constructing a query based on actual possible foods. 
-    - The query should be short, general, and centered on specific dish titles like "chicken and spinach" or "pasta salad"
+    - The query should be short, general, and centered on specific dish titles like "chicken and spinach" or "pasta salad". It is less about stating actual dishes and more about the ingredients and types of food.
     - Do not make sentences or phrases like "low carb chicken and spinach" or "healthy pasta salad"
     - It is better to be more abstract and general, e.g., "chicken and spinach" or "pasta salad" rather than specific constraints.
     - Avoid abstract constraints like "low carb."
@@ -101,6 +96,9 @@ export async function POST(request) {
     3. Health Details and Goal: 
     - Consider the health details and goals, e.g., low carb, high protein, vegetarian, etc., to tailor recipes to dietary needs.
     - Convert the details to diet and intolerance choices (ref ## DIET CHOICES & ## INTOLERANCE CHOICES).
+    - When you think about health goals and details, try to avoid contadiction:
+        - Example: if preferred ingredients are meat and the health goal is vegetarian, it is contradictory. 
+        - Example: if a health goal is to eat more veggies, do not consider this vegetarian or paeleo but rather a way to include more veggies in the diet.
 
     4. Ingredient Preference: Take into account any preferred or necessary ingredients to include in the recipes.
     - Pass as a single string separated by commas.
@@ -119,17 +117,12 @@ export async function POST(request) {
     # OUTPUT DEFINITION
     {
     "query": "The (natural language) recipe search query focusing on possible foods.",
-    "cuisine": "The cuisine(s) of the recipes. One or more, comma separated (will be interpreted as 'OR').",
-    "excludeCuisine": "The cuisine(s) the recipes must not match. One or more, comma separated (interpreted as 'AND').",
     "diet": "The diet(s) for which the recipes must be suitable. Comma means AND, pipe | means OR.",
     "intolerances": "A comma-separated list of intolerances. Recipes must not contain unsuitable ingredients.",
     "includeIngredients": "A comma-separated list of ingredients that should be used in the recipes.",
     "excludeIngredients": "A comma-separated list of ingredients the recipes must not contain.",
     "number": "The number of expected results (1-100)."
     }
-
-    # CUISINE CHOICES
-    African, Asian, American, British, Cajun, Caribbean, Chinese, Eastern European, European, French, German, Greek, Indian, Irish, Italian, Japanese, Jewish, Korean, Latin American, Mediterranean, Mexican, Middle Eastern, Nordic, Southern, Spanish, Thai, Vietnamese
 
     # DIET CHOICES
     Vegetarian, Lacto-Vegetarian, Ovo-Vegetarian, Vegan, Pescetarian, Paleo, Primal, Low FODMAP, Whole30
@@ -152,14 +145,6 @@ export async function POST(request) {
                         query: {
                             type: "string",
                             description: "The (natural language) recipe search query."
-                        },
-                        cuisine: {
-                            type: "string",
-                            description: "The cuisine(s) of the recipes. One or more, comma separated (will be interpreted as 'OR')."
-                        },
-                        excludeCuisine: {
-                            type: "string",
-                            description: "The cuisine(s) the recipes must not match. One or more, comma separated (interpreted as 'AND')."
                         },
                         diet: {
                             type: "string",
@@ -198,12 +183,9 @@ export async function POST(request) {
     });
 
     let ai_recipe = JSON.parse(response.output_text);
-    console.log("AI RECIPE", ai_recipe);
 
     let {
         query,
-        cuisine,
-        excludeCuisine,
         diet,
         intolerances,
         includeIngredients,
@@ -214,8 +196,6 @@ export async function POST(request) {
     // Get the recipe details from the API
     let recipeDetails = await getRecipeFromAPI(
         query,
-        cuisine,
-        excludeCuisine,
         diet,
         intolerances,
         includeIngredients,
@@ -223,24 +203,15 @@ export async function POST(request) {
         number
     );
 
-    let result;
-
-    if (!recipeDetails.recipeFound) {
-        result = {
-            recipes: [],
-            error: "No recipes found",
-        };
-    } else {
-        result = {
-            recipes: recipeDetails.recipes,
-        };
-    }
+    const recipes = recipeDetails.recipeFound ? recipeDetails.recipes : [];
 
     return new Response(
         JSON.stringify({
-            result,
-            message: "Recipes generated successfully",
-        }),
+            recipes,
+            message: recipeDetails.recipeFound
+                ? "Recipe(s) generated successfully"
+                : "No recipes found",
+            }),
         {
             status: 200,
             headers: {
