@@ -5,7 +5,7 @@ import Image from "next/image";
 function IngredientPreferences() {
     
     const { formData, updateFormData } = useContext(AccountContext);
-    const [ingredients, setIngredients] = useState();
+    const [ingredients, setIngredients] = useState("");
     //const { updateFormData } = useContext(AccountContext); // global context to update form data
 
     useEffect(() => {
