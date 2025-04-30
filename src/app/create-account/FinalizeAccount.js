@@ -7,6 +7,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { AccountContext } from "./AccountContext";
 import db from "@/lib/firebase";
 import { fetchUserInfo } from "@/lib/fetchUserInfo";
+import { useQueryClient } from "@tanstack/react-query";
 
 function FinalizeAccount() {
     const { data: session } = useSession(); // user session info from google sign-in
@@ -16,6 +17,7 @@ function FinalizeAccount() {
     const [statusMessage, setStatusMessage] = useState(
         "Generating your personalized meals using AI..."
     );
+    const queryClient = useQueryClient();
     const router = useRouter(); // for redirecting the user
 
     useEffect(() => {
@@ -26,8 +28,13 @@ function FinalizeAccount() {
             }
 
             try {
+                const userEmail = session.user.email;
+                console.log("User email:", userEmail);
+                console.log("Form data:", formData);
+
+
                 // compose full document to be saved in firestore
-                let checkUserExists = await fetchUserInfo(session.user.email);
+                let checkUserExists = await fetchUserInfo(userEmail);
                 if (checkUserExists) {
                     console.log(
                         "User already exists in Firestore. Skipping save."
@@ -47,10 +54,19 @@ function FinalizeAccount() {
                     setStatusMessage("All done! Redirecting...");
                 }
 
+                await queryClient.prefetchQuery({
+                    queryKey: ["meals", userEmail],
+                    queryFn: () => fetchMeals(userEmail),
+
+                });
+
+
+
                 // small delay before redirect
                 setTimeout(() => {
                     router.push("/"); // Redirect to homepage
-                }, 3500);
+                }, 2000);
+
             } catch (error) {
                 console.error("Error saving preferences:", error);
                 setStatusMessage("Failed to save. Please try again.");
@@ -58,7 +74,7 @@ function FinalizeAccount() {
         };
 
         savePreferencesAndRedirect();
-    }, [session, formData, router]);
+    }, [session, formData, router, queryClient]);
 
     return (
         <div className="text-center text-green-700 font-semibold text-lg animate-pulse">

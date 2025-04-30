@@ -6,26 +6,13 @@ import { fetchMeals } from "@/lib/fetchMeals";
 import { Button } from "@/components/ui/button";
 import { deleteMeals }  from "@/lib/deleteMeals";
 
-export default function GenerateMealLogic({ email}) {
+export default function GenerateMealLogic({ meals, email }) {
     const router = useRouter(); // Used to navigate to multi-step form
 
 
     const queryClient = useQueryClient(); // access cache manually
 
-    const { data: meals, isLoading, error } = useQuery({
-      queryKey: ["meals", email],
-      queryFn: () => fetchMeals(email),
-    });
     
-
-    if (isLoading) {
-      return null;
-    }
-
-    if (error) {
-      return <div>Error loading meals.</div>;
-    }
-
     const isNewUser = meals.length === 0;
     // Called when the "Generate" button is clicked
     const handleGenerate = () => {
