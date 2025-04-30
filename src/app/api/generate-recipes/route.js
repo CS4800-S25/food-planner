@@ -1,34 +1,57 @@
 export const revalidate = 0; // Disable revalidation for this route
 import OpenAI from "openai";
-async function getRecipeFromAPI(recipeName) {
-    let foodRequest = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?query=${recipeName}&number=1&addRecipeInformation=true`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "x-api-key": process.env.SPOONACULAR_API_KEY,
-            },
-        }
-    );
+async function getRecipeFromAPI(
+    query, 
+    diet, 
+    intolerances, 
+    includeIngredients, 
+    excludeIngredients, 
+    number = 1
+) {
+    // create a URLSearchParams object
+    const params = new URLSearchParams({
+        query: query || "",
+        number: number.toString(),
+        addRecipeInformation: true,
+        addRecipeNutrition: true,
+        addRecipeInstructions: true,
+        instructionsRequired: true,
+        minServingSize: "1"
+    });
+    if (diet) params.append("diet", diet);
+    if (intolerances) params.append("intolerances", intolerances);
+    if (includeIngredients) params.append("includeIngredients", includeIngredients);
+    if (excludeIngredients) params.append("excludeIngredients", excludeIngredients);
+
+    // Make the API request
+    const url = `https://api.spoonacular.com/recipes/complexSearch?${params.toString()}`;
+    const foodRequest = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.SPOONACULAR_API_KEY,
+        },
+    });
     let apiResponse = await foodRequest.json();
-    console.log("FOOD API RESPONSE", apiResponse);
-    if (!apiResponse || apiResponse.results.length === 0) {
+    if (!apiResponse || !apiResponse.results || apiResponse.results.length === 0) {
         return {
             recipeFound: false,
+            recipes: [],
         };
     }
-    let { id, title, image, readyInMinutes, servings, pricePerServing } =
-        apiResponse.results[0];
 
-    return {
+    let recipes = apiResponse.results.map(({ id, title, image, readyInMinutes, servings, pricePerServing }) => ({
         id,
         title,
         image,
         readyInMinutes,
         servings,
         pricePerServing,
+    }));
+
+    return {
         recipeFound: true,
+        recipes,
     };
 }
 
@@ -44,116 +67,151 @@ export async function POST(request) {
         ingredientPreferences,
         numberOfMeals,
     } = res;
-
     const openai = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
     });
 
     const response = await openai.responses.create({
-        model: "gpt-4.1-mini",
+        model: "o4-mini",
         input: [
             {
-                role: "system",
+                role: "developer",
                 content: [
                     {
                         type: "input_text",
-                        text: 'Generate a list of recipes that align with the given factors: budget, health details, health goal, ingredient preference, and number of meals. Ensure that the number of recipes generated matches the number of meals specified.\n\n# Steps\n\n1. **Budget Consideration**: Identify ingredients and recipes that fit within the provided budget.\n2. **Health Details and Goal**: Consider the health details and goals, eg. low carb, high protein, vegetarian, etc., to align recipes with dietary needs.\n3. **Ingredient Preference**: Take into account any preferred or necessary ingredients to include in the recipes.\n4. **Match Number of Meals**: Generate a corresponding number of recipes to the specified number of meals.\n\n# Output Format\n\n- A JSON object with keys for each recipe:\n  - Name\n  - Ingredients\n  - Instructions\n  - Estimated Cost (if applicable)\nExample output structure:\n```\n{\n  "recipes": [\n    {\n      "name": "Example Dish",\n      "ingredients": ["ingredient1", "ingredient2"],\n      "instructions": "Step-by-step cooking instructions.",\n      "estimated_cost": "Approximate cost",\n    },\n    ...\n  ]\n}\n```\n\n# Examples\n\n**Input**\n- Budget: $50\n- Health Details: Low carb\n- Health Goal: Weight loss\n- Ingredient Preference: Chicken, spinach\n- Number of Meals: 3\n\n**Output**\n```\n{\n  "recipes": [\n    {\n      "name": "Chicken and Spinach Stir-fry",\n      "ingredients": ["chicken breast", "spinach", "garlic", "olive oil"],\n      "instructions": "Sauté garlic in olive oil, add chicken until cooked, then add spinach until wilted.",\n      "estimated_cost": "$12"\n    },\n    {\n      "name": "Spicy Grilled Chicken",\n      "ingredients": ["chicken thighs", "chili powder", "lime"],\n      "instructions": "Marinate chicken with chili powder and lime, then grill until cooked.",\n      "estimated_cost": "$15"\n    },\n    {\n      "name": "Spinach Omelette",\n      "ingredients": ["eggs", "spinach", "cheese"],\n      "instructions": "Whisk eggs, add spinach and cheese, cook in a pan until set.",\n      "estimated_cost": "$10"\n    }\n  ]\n}\n```\n\n# Notes\n\n- Ensure the total estimated cost of all meals does not exceed the budget provided.\n- Consider rotating recipes for variety if the same ingredient preference is present.',
-                    },
-                ],
-            },
-            {
-                role: "user",
-                content: [
-                    {
-                        type: "input_text",
-                        text: `- Budget: ${budget}\n- Health Details: ${healthDetails}\n- Health Goal: ${healthGoal}\n- Ingredient Preference: ${ingredientPreferences}\n- Number of Meals: ${numberOfMeals}`,
-                    },
-                ],
-            },
+                        text: `# GOAL
+    Generate a list of recipes that align with the given factors: budget, health details, health goal, ingredient preference, and number of meals. Ensure that the number of recipes generated matches the number of meals specified. The main task is to formulate a search query focusing on actual possible foods rather than abstract constraints, using the parameters to shape the search query effectively.
+
+    # STEPS
+    1. Query Construction: 
+    - Focus on constructing a query based on actual possible foods. 
+    - The query should be short, general, and centered on specific dish titles like "chicken and spinach" or "pasta salad". It is less about stating actual dishes and more about the ingredients and types of food.
+    - Do not make sentences or phrases like "low carb chicken and spinach" or "healthy pasta salad"
+    - It is better to be more abstract and general, e.g., "chicken and spinach" or "pasta salad" rather than specific constraints.
+    - Avoid abstract constraints like "low carb."
+
+    2. Budget Consideration: 
+    - Identify ingredients and recipes that fit within the provided budget.
+
+    3. Health Details and Goal: 
+    - Consider the health details and goals, e.g., low carb, high protein, vegetarian, etc., to tailor recipes to dietary needs.
+    - Convert the details to diet and intolerance choices (ref ## DIET CHOICES & ## INTOLERANCE CHOICES).
+    - When you think about health goals and details, try to avoid contadiction:
+        - Example: if preferred ingredients are meat and the health goal is vegetarian, it is contradictory. 
+        - Example: if a health goal is to eat more veggies, do not consider this vegetarian or paeleo but rather a way to include more veggies in the diet.
+
+    4. Ingredient Preference: Take into account any preferred or necessary ingredients to include in the recipes.
+    - Pass as a single string separated by commas.
+    - If there are no preferences, do not make any assumptions about the ingredients.
+
+    5. Match Number of Meals: 
+    - Generate a corresponding number of recipes to the specified number of meals.
+
+    # INPUT VARIABLES FOR GENERATION
+    - Budget: ${budget || "N/A"}
+    - Health Details: ${healthDetails || "N/A"}
+    - Health Goal: ${healthGoal || "N/A"}
+    - Ingredient Preference: ${ingredientPreferences || "N/A"}
+    - Number of Meals: ${numberOfMeals || "N/A"}
+
+    # OUTPUT DEFINITION
+    {
+    "query": "The (natural language) recipe search query focusing on possible foods.",
+    "diet": "The diet(s) for which the recipes must be suitable. Comma means AND, pipe | means OR.",
+    "intolerances": "A comma-separated list of intolerances. Recipes must not contain unsuitable ingredients.",
+    "includeIngredients": "A comma-separated list of ingredients that should be used in the recipes.",
+    "excludeIngredients": "A comma-separated list of ingredients the recipes must not contain.",
+    "number": "The number of expected results (1-100)."
+    }
+
+    # DIET CHOICES
+    Vegetarian, Lacto-Vegetarian, Ovo-Vegetarian, Vegan, Pescetarian, Paleo, Primal, Low FODMAP, Whole30
+
+    # INTOLERANCE CHOICES
+    Dairy, Egg, Gluten, Grain, Peanut, Seafood, Sesame, Shellfish, Soy, Sulfite, Tree Nut, Wheat`
+                    }
+                ]
+            }
         ],
         text: {
             format: {
                 type: "json_schema",
-                name: "recipe_collection",
+                name: "spoonacular_api",
+                strict: false,
                 schema: {
                     type: "object",
-                    required: ["recipe_list"],
+                    required: ["query"],
                     properties: {
-                        recipe_list: {
-                            type: "array",
-                            items: {
-                                type: "object",
-                                required: [
-                                    "recipe_title",
-                                    "instructions",
-                                    "ingredients",
-                                ],
-                                properties: {
-                                    ingredients: {
-                                        type: "array",
-                                        items: {
-                                            type: "string",
-                                            description:
-                                                "An ingredient required for the recipe.",
-                                        },
-                                        description:
-                                            "List of ingredients needed for the recipe.",
-                                    },
-                                    instructions: {
-                                        type: "string",
-                                        description:
-                                            "Step-by-step instructions for making the recipe.",
-                                    },
-                                    recipe_title: {
-                                        type: "string",
-                                        description: "The title of the recipe.",
-                                    },
-                                },
-                                additionalProperties: false,
-                            },
-                            description: "An array of recipe items.",
+                        query: {
+                            type: "string",
+                            description: "The (natural language) recipe search query."
                         },
+                        diet: {
+                            type: "string",
+                            description: "The diet(s) for which the recipes must be suitable. Comma means AND, pipe | means OR."
+                        },
+                        intolerances: {
+                            type: "string",
+                            description: "A comma-separated list of intolerances. Recipes must not contain unsuitable ingredients."
+                        },
+                        includeIngredients: {
+                            type: "string",
+                            description: "A comma-separated list of ingredients that should be used in the recipes."
+                        },
+                        excludeIngredients: {
+                            type: "string",
+                            description: "A comma-separated list of ingredients the recipes must not contain."
+                        },
+                        number: {
+                            type: "integer",
+                            minimum: 1,
+                            maximum: 100,
+                            description: "The number of expected results (1-100)."
+                        },
+                        addRecipeNutrition: {
+                            type: "boolean",
+                            description: "True or false boolean -  If true, adds nutritional information about each recipe."
+                        }
                     },
-                    additionalProperties: false,
-                },
-                strict: true,
-            },
+                    additionalProperties: false
+                }
+            }
         },
-        reasoning: {},
+        reasoning: { effort: "medium" },
         tools: [],
-        temperature: 1,
-        max_output_tokens: 2048,
-        top_p: 1,
-        store: false,
+        store: true
     });
 
-    let { recipe_list } = JSON.parse(response.output_text);
-    let recipes = await Promise.all(
-        recipe_list.map(async (recipe) => {
-            let { recipe_title, instructions, ingredients } = recipe;
-            let recipeDetails = await getRecipeFromAPI(recipe_title);
-            if (!recipeDetails.recipeFound) {
-                return {
-                    recipe_title,
-                    instructions,
-                    ingredients,
-                    error: "Recipe not found",
-                };
-            }
+    let ai_recipe = JSON.parse(response.output_text);
 
-            return {
-                ...recipeDetails,
-                instructions,
-                ingredients,
-            };
-        })
+    let {
+        query,
+        diet,
+        intolerances,
+        includeIngredients,
+        excludeIngredients,
+        number
+    } = ai_recipe;
+
+    // Get the recipe details from the API
+    let recipeDetails = await getRecipeFromAPI(
+        query,
+        diet,
+        intolerances,
+        includeIngredients,
+        excludeIngredients,
+        number
     );
+
+    const recipes = recipeDetails.recipeFound ? recipeDetails.recipes : [];
 
     return new Response(
         JSON.stringify({
             recipes,
-            message: "Recipes generated successfully",
-        }),
+            message: recipeDetails.recipeFound
+                ? "Recipe(s) generated successfully"
+                : "No recipes found",
+            }),
         {
             status: 200,
             headers: {
