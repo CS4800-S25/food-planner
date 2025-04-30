@@ -6,13 +6,15 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchMeals } from "@/lib/fetchMeals";
 import MealModal from "@/components/MealModal";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
-export default function MealsCarousel({ email }) {
-    const { data: meals, isLoading, error } = useQuery({
-        queryKey: ["meals", email],
-        queryFn: () => fetchMeals(email),
-        refetchOnWindowFocus: false,
-    });
+export default function MealsCarousel({ meals, email }) {
+    
+    const router = useRouter();
+    const queryClient = useQueryClient();
+
+    const isNewUser = meals.length === 0;
 
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,14 +42,6 @@ export default function MealsCarousel({ email }) {
         setIsModalOpen(false);
     };
 
-    if (isLoading) {
-        return null;
-    }
-
-    if (error) {
-        return <div>Error loading meals.</div>;
-    
-    }
     
     // If meals is empty, show a message
 
