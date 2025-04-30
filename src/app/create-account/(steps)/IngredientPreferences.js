@@ -3,9 +3,16 @@ import { AccountContext } from "../AccountContext";
 import Image from "next/image";
 
 function IngredientPreferences() {
-    const [ingredients, setIngredients] = useState(""); //local state to track the input
+    
+    const { formData, updateFormData } = useContext(AccountContext);
+    const [ingredients, setIngredients] = useState();
+    //const { updateFormData } = useContext(AccountContext); // global context to update form data
 
-    const { updateFormData } = useContext(AccountContext); // global context to update form data
+    useEffect(() => {
+        if (formData?.ingredientPreferences) {
+            setIngredients(formData.ingredientPreferences);
+        }
+    }, [formData]);
 
     // sync input with global context form data
     useEffect(() => {
