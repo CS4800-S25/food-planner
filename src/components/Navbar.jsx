@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Navbar({ userName, userEmail, userImage }) {
     const [isHovered, setIsHovered] = useState(false);
@@ -12,6 +13,14 @@ export default function Navbar({ userName, userEmail, userImage }) {
             <div className="text-2xl font-bold">
                 Food Planner
             </div>
+
+            <div className="flex items-center space-x-8">
+                <Link href="/account">
+                    <button className="text-lg font-semibold px-6 py-3 bg-lime-500 hover:bg-lime-600 text-white rounded-xl shadow-md transition">
+                        Account Preferences
+                    </button>
+                </Link>
+           
 
             {/* Profile Picture + Hover Card */}
             <div 
@@ -33,7 +42,9 @@ export default function Navbar({ userName, userEmail, userImage }) {
                         <p className="text-sm text-gray-600">{userEmail}</p>
                     </div>
                 )}
+
             </div>
+           </div>     
         </nav>
     );
 }

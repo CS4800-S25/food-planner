@@ -9,10 +9,34 @@ import HealthGoal from "./(steps)/HealthGoal";
 import TotalMeals from "./(steps)/TotalMeals";
 import Budget from "./(steps)/Budget";
 import FinalizeAccount from "./FinalizeAccount";
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { fetchUserInfo } from "@/lib/fetchUserInfo";
+import { useEffect } from "react";
 
 function CreateAccount() {
     const { currentStep, setCurrentStep } = useContext(AccountContext); //currentStep and its setter from context
     const STEPS_LIMIT = 6; // unumber of steps
+
+    const pathname = usePathname();
+    const isEdit = pathname === "/account"; // true when editing
+    const { data: session } = useSession();
+    const { updateFormData } = useContext(AccountContext);
+
+
+
+    useEffect(() => {
+        const loadUserPreferences = async () => {
+          if (!isEdit || !session?.user?.email) return;
+          const userData = await fetchUserInfo(session.user.email);
+          if (userData?.preferences) {
+            updateFormData(userData.preferences); // prefill the context formData
+          }
+        };
+      
+        loadUserPreferences();
+      }, [isEdit, session, updateFormData]);
+
 
     // advance to the next step
     const handleNextStep = () => {
