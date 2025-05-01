@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { AccountContext, AccountProvider } from "./AccountContext";
+import { AccountContext } from "./AccountContext";
 import { useContext } from "react";
 import { Progress } from "@/components/ui/progress";
 import IngredientPreferences from "./(steps)/IngredientPreferences";
@@ -13,34 +13,102 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { fetchUserInfo } from "@/lib/fetchUserInfo";
 import { useEffect } from "react";
+import { setDoc, doc } from "firebase/firestore";
+import db from "@/lib/firebase";
+import { useRouter } from "next/navigation";
 
-function CreateAccount() {
+async function generateRecipes(
+    budget,
+    healthDetails,
+    healthGoal,
+    ingredientPreferences,
+    numberOfMeals
+) {
+    let apiFoodRequest = await fetch("/api/generate-recipes", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            budget: budget,
+            healthDetails: healthDetails,
+            healthGoal: healthGoal,
+            ingredientPreferences: ingredientPreferences,
+            numberOfMeals: numberOfMeals,
+        }),
+    });
+    let apiFoodResponse = await apiFoodRequest.json();
+    return apiFoodResponse;
+}
+
+async function savePreferencesAndRedirect(userEmail, formData) {
+    try {
+        const { id } = await fetchUserInfo(userEmail);
+        if (!id) {
+            console.error("User not found in Firebase.");
+            return;
+        }
+
+        let recipeList = await generateRecipes(
+            formData.budget,
+            formData.healthDetails,
+            formData.healthGoal,
+            formData.ingredientPreferences,
+            formData.numberOfMeals
+        );
+        console.log("Generated recipes!");
+
+        console.log(recipeList);
+        const docData = {
+            email: userEmail,
+            preferences: formData,
+            timestamp: new Date(),
+            recipes: recipeList.recipes,
+        };
+
+        await setDoc(
+            doc(db, "userMealPlans", id),
+            docData
+        );
+        console.log("Saved to Firebase!");
+    } catch (error) {
+        console.error("Error saving preferences:", error);
+    }
+}
+
+export default function CreateAccount() {
     const { currentStep, setCurrentStep } = useContext(AccountContext); //currentStep and its setter from context
     const STEPS_LIMIT = 6; // unumber of steps
 
     const pathname = usePathname();
     const isEdit = pathname === "/account"; // true when editing
     const { data: session } = useSession();
-    const { updateFormData } = useContext(AccountContext);
-
-
+    const { formData, updateFormData } = useContext(AccountContext);
+    const router = useRouter();
 
     useEffect(() => {
         const loadUserPreferences = async () => {
-          if (!isEdit || !session?.user?.email) return;
-          const userData = await fetchUserInfo(session.user.email);
-          if (userData?.preferences) {
-            updateFormData(userData.preferences); // prefill the context formData
-          }
+            if (!isEdit || !session?.user?.email) return;
+            const userData = await fetchUserInfo(session.user.email);
+            if (userData?.preferences) {
+                updateFormData(userData.preferences); // prefill the context formData
+            }
         };
-      
-        loadUserPreferences();
-      }, [isEdit, session, updateFormData]);
 
+        loadUserPreferences();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // advance to the next step
-    const handleNextStep = () => {
+    const handleNextStep = async () => {
         setCurrentStep((prevStep) => prevStep + 1);
+        if (currentStep === STEPS_LIMIT - 1) {
+            await savePreferencesAndRedirect(session.user.email, formData);
+
+            setTimeout(() => {
+                router.push("/"); // Redirect to homepage
+            }, 2000);
+        }
     };
 
     // go back to the previous step
@@ -49,7 +117,6 @@ function CreateAccount() {
     };
 
     return (
-        
         <div className="max-w-3xl mx-auto pt-32 min-h-[600px] space-y-6 p-6 border rounded shadow bg-green-50">
             <h1 className="text-2xl font-bold text-center">
                 Let&apos;s Personalize Your Meal Plan
@@ -107,13 +174,5 @@ function CreateAccount() {
                 </div>
             )}
         </div>
-    );
-}
-
-export default function Page() {
-    return (
-        <AccountProvider>
-            <CreateAccount />
-        </AccountProvider>
     );
 }
