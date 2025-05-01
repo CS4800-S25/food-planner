@@ -1,14 +1,10 @@
-import Link from "next/link";
+import CreateAccount from "@/app/create-account/CreateAccount";
+import { AccountProvider } from "@/app/create-account/AccountContext";
 
-function Account() {
+export default function Page() {
     return (
-        <>
-            <h1>Account and Preferences</h1>
-            <p>- Editing the meal plan preferences</p>
-            <p>- Reuse flow from the create-account page</p>
-            <Link href="/">Return to Home Page</Link>
-        </>
+        <AccountProvider>
+            <CreateAccount />
+        </AccountProvider>
     );
 }
-
-export default Account;

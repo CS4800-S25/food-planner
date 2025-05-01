@@ -9,85 +9,38 @@ import HealthGoal from "./(steps)/HealthGoal";
 import TotalMeals from "./(steps)/TotalMeals";
 import Budget from "./(steps)/Budget";
 import FinalizeAccount from "./FinalizeAccount";
-import { useRouter } from "next/navigation";
-import { fetchUserInfo } from "@/lib/fetchUserInfo";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { addDoc, collection } from "firebase/firestore";
-import db from "@/lib/firebase";
-
-
-async function generateRecipes(
-    budget,
-    healthDetails,
-    healthGoal,
-    ingredientPreferences,
-    numberOfMeals
-) {
-    let apiFoodRequest = await fetch("/api/generate-recipes", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            budget: budget,
-            healthDetails: healthDetails,
-            healthGoal: healthGoal,
-            ingredientPreferences: ingredientPreferences,
-            numberOfMeals: numberOfMeals,
-        }),
-    });
-    let apiFoodResponse = await apiFoodRequest.json();
-    return apiFoodResponse;
-}
-
-async function savePreferencesAndRedirect(userEmail, formData) {
-    try {
-        let checkUserExists = await fetchUserInfo(userEmail);
-        if (checkUserExists) {
-            console.log("User already exists in Firestore. Skipping save.");
-        } else {
-            let recipeList = await generateRecipes(
-                formData.budget,
-                formData.healthDetails,
-                formData.healthGoal,
-                formData.ingredientPreferences,
-                formData.numberOfMeals
-            );
-            console.log("Generated recipes!");
-
-            console.log(recipeList);
-            const docData = {
-                email: userEmail,
-                preferences: formData,
-                timestamp: new Date(),
-                recipes: recipeList.recipes,
-            };
-
-            await addDoc(collection(db, "userMealPlans"), docData);
-            console.log("Saved to Firebase!");
-        }
-    } catch (error) {
-        console.error("Error saving preferences:", error);
-    }
-}
+import { fetchUserInfo } from "@/lib/fetchUserInfo";
+import { useEffect } from "react";
 
 function CreateAccount() {
-    const router = useRouter();
+    const { currentStep, setCurrentStep } = useContext(AccountContext); //currentStep and its setter from context
+    const STEPS_LIMIT = 6; // unumber of steps
+
+    const pathname = usePathname();
+    const isEdit = pathname === "/account"; // true when editing
     const { data: session } = useSession();
-    const { currentStep, setCurrentStep, formData } =
-        useContext(AccountContext); //currentStep and its setter from context
-    const STEPS_LIMIT = 6; // number of steps
+    const { updateFormData } = useContext(AccountContext);
+
+
+
+    useEffect(() => {
+        const loadUserPreferences = async () => {
+          if (!isEdit || !session?.user?.email) return;
+          const userData = await fetchUserInfo(session.user.email);
+          if (userData?.preferences) {
+            updateFormData(userData.preferences); // prefill the context formData
+          }
+        };
+      
+        loadUserPreferences();
+      }, [isEdit, session, updateFormData]);
+
 
     // advance to the next step
-    const handleNextStep = async () => {
+    const handleNextStep = () => {
         setCurrentStep((prevStep) => prevStep + 1);
-        if (currentStep === STEPS_LIMIT - 1) {
-            await savePreferencesAndRedirect(session.user.email, formData);
-
-            setTimeout(() => {
-                router.push("/"); // Redirect to homepage
-            }, 2000);
-        }
     };
 
     // go back to the previous step
@@ -96,7 +49,8 @@ function CreateAccount() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto pt-32 min-h-[600px] space-y-6 p-6 border rounded shadow bg-white">
+        
+        <div className="max-w-3xl mx-auto pt-32 min-h-[600px] space-y-6 p-6 border rounded shadow bg-green-50">
             <h1 className="text-2xl font-bold text-center">
                 Let&apos;s Personalize Your Meal Plan
             </h1>
@@ -133,7 +87,7 @@ function CreateAccount() {
                         disabled={currentStep === STEPS_LIMIT}
                         className="bg-lime-500 hover:bg-lime-600 text-white px-4 py-2 rounded"
                     >
-                        {currentStep === STEPS_LIMIT - 1 ? "Finish" : "Next →"}
+                        Next →
                     </button>
                 )}
             </div>

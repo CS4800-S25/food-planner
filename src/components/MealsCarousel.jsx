@@ -54,12 +54,38 @@ export default function MealsCarousel({ meals, email }) {
         );
     }
 
+
+    const CustomNextArrow = ({ onClick }) => (
+        <div
+          className="absolute right-[-15px] top-1/2 transform -translate-y-1/2 text-3xl text-green-800 z-10 cursor-pointer"
+          onClick={onClick}
+        >
+          ▶
+        </div>
+      );
+      
+      const CustomPrevArrow = ({ onClick }) => (
+        <div
+          className="absolute left-[-15px] top-1/2 transform -translate-y-1/2 text-3xl text-green-800 z-10 cursor-pointer"
+          onClick={onClick}
+        >
+          ◀
+        </div>
+      );
+
+
     const settings = {
         dots: true,
         infinite: true,
+        swipe: true,
+        swipeToSlide: true,
+        draggable: true,
         speed: 500,
         slidesToShow: 3, // How many meal cards to show at once
         slidesToScroll: 1,
+        arrows: true,
+        nextArrow: <CustomNextArrow />,
+        prevArrow: <CustomPrevArrow />,
         responsive: [
             {
                 breakpoint: 1024,
@@ -77,10 +103,10 @@ export default function MealsCarousel({ meals, email }) {
     };
 
     return (
-        <div className="mt-8">
+        <div className="mt-8 px-4 pb-10 w-full relative overflow-visible bg-transparent rounded-xl">
             <Slider {...settings}>
                 {meals.map((meal, index) => (
-                    <div key={index} className="px-2" onClick={() => openModal(meal)}>
+                    <div key={index} className="px-2 h-[550px] flex items-stretch" onClick={() => openModal(meal)}>
                         <MealCard
                             title={meal.title}
                             description={meal.description}
@@ -90,7 +116,9 @@ export default function MealsCarousel({ meals, email }) {
                     </div>
                 ))}
             </Slider>
+            <div className="h-4" />
             <MealModal isOpen={isModalOpen} closeModal={closeModal} meal={selectedMeal} />
+            
         </div>
     );
 }
