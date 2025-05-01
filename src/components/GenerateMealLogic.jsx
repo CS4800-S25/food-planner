@@ -38,13 +38,15 @@ export default function GenerateMealLogic({ meals, email }) {
 
               {/* Dev Reset Button */}
               <p></p>
+              <div className="fixed bottom-4 right-4 z-50"> 
               <Button
                   variant="outline"
-                  className="mt-4"
+                  className="text-xs px-3 py-1 bg-gray-200 text-gray-600 rounded hover:bg-gray-300"
                   onClick={handleReset}
               >
                   Reset User Status (Dev Only)
               </Button>
+              </div>
           </div>
     );
 }

@@ -9,8 +9,13 @@ const nextConfig = {
                 pathname: "/a/**",
                 search: "",
             },
+
+            
+
         ],
     },
+
+    
 };
 
 export default nextConfig;

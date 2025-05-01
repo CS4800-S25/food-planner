@@ -13,21 +13,21 @@ function MealCard({
     const router = useRouter();
     return (
         <Card
-            className="text-center p-4 shadow-lg rounded-lg bg-white hover:shadow-xl transition-shadow duration-300 cursor-pointer flex flex-col items-center justify-center"
+            className="h-[500px] text-center p-6 rounded-xl bg-[#8fba83] border-[#c5e8c5] shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col items-center border border-[#e0e0d0]"
             //onClick={() => router.push(`/meal/${title}`)}
         >
-            <h2 className="text-2xl font-bold">{title}</h2>
+            <h2 className="text-2xl font-bold text-[#365314]">{title}</h2>
             <Image
                 src={imageUrl}
                 alt={title}
                 width={300}
                 height={300}
-                className="rounded-lg my-4"
+                className="rounded-md my-4 object-cover"
                 unoptimized
             ></Image>
-            <p className="text-gray-600">{description}</p>
-            <p className="text-gray-600">${price}</p>
-            <p className="text-gray-600">Serves: {servingSize}</p>
+            <p className="text-sm text-gray-600 mb-1 italic">{description}</p>
+            <p className="text-base text-[#2f5d24] font-medium">${price}</p>
+            <p className="text-sm text-gray-500">Serves: {servingSize}</p>
             
         </Card>
     );

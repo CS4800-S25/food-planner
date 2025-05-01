@@ -49,7 +49,8 @@ function CreateAccount() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto pt-32 min-h-[600px] space-y-6 p-6 border rounded shadow bg-white">
+        
+        <div className="max-w-3xl mx-auto pt-32 min-h-[600px] space-y-6 p-6 border rounded shadow bg-green-50">
             <h1 className="text-2xl font-bold text-center">
                 Let&apos;s Personalize Your Meal Plan
             </h1>

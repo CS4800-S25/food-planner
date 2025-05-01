@@ -25,14 +25,14 @@ function IngredientPreferences() {
             <Image
                 src="/step-visuals/1-avocado.png"
                 alt="Avocado"
-                className="absolute top-[40px] -left-[110px] w-[100px] hidden md:block z-10 pointer-events-non animate-wiggle"
+                className="absolute top-[25px] -left-[115px] w-[110px] hidden md:block z-10 pointer-events-non animate-wiggle"
                 width={100}
                 height={100}
             />
             <Image
                 src="/step-visuals/1-pepper.png"
                 alt="Red Pepper"
-                className="absolute top-[40px] -right-[110px] w-[100px] hidden md:block z-10 pointer-events-none animate-wiggle"
+                className="absolute top-[25px] -right-[115px] w-[110px] hidden md:block z-10 pointer-events-none animate-wiggle"
                 width={100}
                 height={100}
             />

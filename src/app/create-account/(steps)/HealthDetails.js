@@ -19,17 +19,17 @@ function HealthDetails() {
         <div className="relative w-full min-h-[200px]">
             <Image
                 src="/step-visuals/2-smoothie.png"
-                alt="Avocado"
+                alt="Smothie"
                 width={100}
                 height={100}
-                className="absolute top-[40px] -left-[110px] hidden md:block z-10 pointer-events-non animate-wiggle"
+                className="absolute top-[75px] -left-[110px] hidden md:block z-10 pointer-events-non animate-wiggle"
             />
             <Image
                 src="/step-visuals/2-allergy.png"
-                alt="Red Pepper"
+                alt="Allergy"
                 width={110}
                 height={110}
-                className="absolute top-[52px] -right-[115px] hidden md:block z-10 pointer-events-none animate-wiggle"
+                className="absolute top-[100px] -right-[118px] hidden md:block z-10 pointer-events-none animate-wiggle"
             />
             <div className="space-y-6">
                 {/* Section Title */}
