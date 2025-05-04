@@ -106,7 +106,7 @@ export default function MealsCarousel({ meals, email }) {
         <div className="mt-8 px-4 pb-10 w-full relative overflow-visible bg-transparent rounded-xl">
             <Slider {...settings}>
                 {meals.map((meal, index) => (
-                    <div key={index} className="px-2 h-[550px] flex items-stretch" onClick={() => openModal(meal)}>
+                    <div key={index} className="px-2 h-[550px]" onClick={() => openModal(meal)}>
                         <MealCard
                             title={meal.title}
                             description={meal.description}

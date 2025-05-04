@@ -134,33 +134,11 @@
   }
 }
 
-/* Fix react-slick clipping */
 
-/* Force visible and styled slick dots */
-.slick-dots {
+.slick-track {
   display: flex !important;
-  justify-content: center;
-  margin-top: 1rem;
-  gap: 0.5rem;
-}
-.slick-dots li button:before {
-  font-size: 12px;
-  color: #2f5d24 !important; /* match your theme green */
-  opacity: 0.5;
-}
-.slick-dots li.slick-active button:before {
-  opacity: 1;
-  color: #4a8d2c !important;
 }
 
-/* Prevent slick from clipping on hover */
-.slick-slide > div {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  /* Make room so scaling doesn't clip */
+.slick-track {
+  width: 100% !important;
 }
-
-.slick-slide {
-  overflow: visible !important;
-}
-
