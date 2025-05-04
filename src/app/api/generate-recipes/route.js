@@ -40,14 +40,22 @@ async function getRecipeFromAPI(
         };
     }
 
-    let recipes = apiResponse.results.map(({ id, title, image, readyInMinutes, servings, pricePerServing }) => ({
-        id,
-        title,
-        image,
-        readyInMinutes,
-        servings,
-        pricePerServing,
-    }));
+    let recipes = apiResponse.results.map(({ id, title, image, readyInMinutes, servings, pricePerServing, nutrition }) => {
+        const ingredientsList = (nutrition.ingredients || []).map(({ name, amount, unit }) => ({
+            name,
+            amount: `${amount} ${unit}`.trim()
+        }));
+
+        return {
+            id,
+            title,
+            image,
+            readyInMinutes,
+            servings,
+            pricePerServing,
+            ingredientsList
+        };
+    });
 
     return {
         recipeFound: true,
@@ -72,7 +80,7 @@ export async function POST(request) {
     });
 
     const response = await openai.responses.create({
-        model: "o4-mini",
+        model: "gpt-4.1",
         input: [
             {
                 role: "developer",
@@ -177,8 +185,10 @@ export async function POST(request) {
                 }
             }
         },
-        reasoning: { effort: "medium" },
+        reasoning: {},
         tools: [],
+        temperature: 0,
+        top_p: 1,
         store: true
     });
 
