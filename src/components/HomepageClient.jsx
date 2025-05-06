@@ -14,6 +14,7 @@ export default function HomepageClient() {
         queryFn: () => fetchUserInfo(email),
     });
 
+
     if (isLoading)
         return <div className="text-center mt-10">Loading meals...</div>;
     if (error)
@@ -23,7 +24,5 @@ export default function HomepageClient() {
             </div>
         );
 
-    return (
-        <HomepageContent meals={data.recipes} email={email} session={session} />
-    );
+    return <HomepageContent meals={data.recipes} email={email} session={session} />;
 }
