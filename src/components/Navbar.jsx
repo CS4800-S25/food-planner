@@ -9,8 +9,6 @@ import { Button } from "@/components/ui/button";
 export default function Navbar({ userName, userEmail, userImage }) {
     const [isHovered, setIsHovered] = useState(false);
 
-    console.log("Navbar props:", { userName, userEmail, userImage });
-
     return (
         <nav className="bg-[#5d8f54] shadow-md px-6 py-4 flex justify-between items-center text-white">
             {/* App Title */}
