@@ -20,14 +20,9 @@ export default function MealsCarousel({ meals }) {
         const mealWithDummyIngredients = {
             title: meal.title || "Sample Meal",
             description: meal.description || "Sample description",
-            price: meal.price || 25,
+            price: meal.pricePerServing || 25,
             servingSize: meal.servings || 2,
-            ingredients: meal.ingredients || [
-                { name: "Beef", price: 15 },
-                { name: "Lettuce", price: 2 },
-                { name: "Kimchi", price: 3 },
-                { name: "Rice", price: 5 },
-            ],
+            ingredients: meal.ingredientsList,
         };
 
         setSelectedMeal(mealWithDummyIngredients);
