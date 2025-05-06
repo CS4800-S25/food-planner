@@ -3,8 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserInfo } from "@/lib/fetchUserInfo";
 import HomepageContent from "./HomepageContent";
+import { useSession } from "next-auth/react";
 
-export default function HomepageClient({ email, session }) {
+export default function HomepageClient() {
+    const { data: session } = useSession();
+    const email = session?.user?.email || null;
+
     const { data, isLoading, error } = useQuery({
         queryKey: ["meals", email],
         queryFn: () => fetchUserInfo(email),

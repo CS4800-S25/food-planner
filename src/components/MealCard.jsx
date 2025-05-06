@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { Card } from "./ui/card";
-import { useRouter } from "next/navigation";
 
 function MealCard({
     title = "Recipe",

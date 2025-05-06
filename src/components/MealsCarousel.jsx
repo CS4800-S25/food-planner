@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function MealsCarousel({ meals, email }) {
-    
+    console.log("MealsCarousel meals:", meals); // Debugging line
     const router = useRouter();
     const queryClient = useQueryClient();
 
@@ -35,43 +35,41 @@ export default function MealsCarousel({ meals, email }) {
         setSelectedMeal(mealWithDummyIngredients);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedMeal(null);
         setIsModalOpen(false);
     };
 
-    
     // If meals is empty, show a message
 
     if (meals.length === 0) {
         return (
             <div className="text-center mt-20">
-                <p className="text-xl text-gray-600">No meals yet. Please generate your meal plan!</p>
-               
+                <p className="text-xl text-gray-600">
+                    No meals yet. Please generate your meal plan!
+                </p>
             </div>
         );
     }
 
-
     const CustomNextArrow = ({ onClick }) => (
         <div
-          className="absolute right-[-15px] top-1/2 transform -translate-y-1/2 text-3xl text-green-800 z-10 cursor-pointer"
-          onClick={onClick}
+            className="absolute right-[-15px] top-1/2 transform -translate-y-1/2 text-3xl text-green-800 z-10 cursor-pointer"
+            onClick={onClick}
         >
-          ▶
+            ▶
         </div>
-      );
-      
-      const CustomPrevArrow = ({ onClick }) => (
-        <div
-          className="absolute left-[-15px] top-1/2 transform -translate-y-1/2 text-3xl text-green-800 z-10 cursor-pointer"
-          onClick={onClick}
-        >
-          ◀
-        </div>
-      );
+    );
 
+    const CustomPrevArrow = ({ onClick }) => (
+        <div
+            className="absolute left-[-15px] top-1/2 transform -translate-y-1/2 text-3xl text-green-800 z-10 cursor-pointer"
+            onClick={onClick}
+        >
+            ◀
+        </div>
+    );
 
     const settings = {
         dots: true,
@@ -80,7 +78,7 @@ export default function MealsCarousel({ meals, email }) {
         swipeToSlide: true,
         draggable: true,
         speed: 500,
-        slidesToShow: 3, // How many meal cards to show at once
+        slidesToShow: 4, // How many meal cards to show at once
         slidesToScroll: 1,
         arrows: true,
         nextArrow: <CustomNextArrow />,
@@ -100,24 +98,41 @@ export default function MealsCarousel({ meals, email }) {
             },
         ],
     };
+    const newSettings = {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+    };
 
     return (
         <div className="mt-8 px-4 pb-10 w-full relative overflow-visible bg-transparent rounded-xl">
             <Slider {...settings}>
                 {meals.map((meal, index) => (
-                    <div key={index} className="px-2 h-[550px] w-full" onClick={() => openModal(meal)}>
+                    <div
+                        key={index}
+                        className="px-2 h-[550px] w-full"
+                        onClick={() => openModal(meal)}
+                    >
                         <MealCard
                             title={meal.title}
                             servingSize={meal.servings}
-                            image={meal.image}
+                            imageUrl={meal.image}
                             price={meal.pricePerServing}
                         />
                     </div>
                 ))}
             </Slider>
             <div className="h-4" />
-            <MealModal isOpen={isModalOpen} closeModal={closeModal} meal={selectedMeal} />
-            
+            <MealModal
+                isOpen={isModalOpen}
+                closeModal={closeModal}
+                meal={selectedMeal}
+            />
+            <Slider {...newSettings}>
+                <MealCard />
+                <MealCard />
+                <MealCard />
+            </Slider>
         </div>
     );
 }
