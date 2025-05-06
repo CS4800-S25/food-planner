@@ -2,8 +2,6 @@
 
 import Slider from "react-slick";
 import MealCard from "@/components/MealCard";
-import { useQuery } from "@tanstack/react-query";
-import { fetchMeals } from "@/lib/fetchMeals";
 import MealModal from "@/components/MealModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -20,11 +18,12 @@ export default function MealsCarousel({ meals, email }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = (meal) => {
+        console.log("Meal clicked:", meal);
         const mealWithDummyIngredients = {
             title: meal.title || "Sample Meal",
             description: meal.description || "Sample description",
             price: meal.price || 25,
-            servingSize: meal.servingSize || 2,
+            servingSize: meal.servings || 2,
             ingredients: meal.ingredients || [
                 { name: "Beef", price: 15 },
                 { name: "Lettuce", price: 2 },
@@ -106,12 +105,12 @@ export default function MealsCarousel({ meals, email }) {
         <div className="mt-8 px-4 pb-10 w-full relative overflow-visible bg-transparent rounded-xl">
             <Slider {...settings}>
                 {meals.map((meal, index) => (
-                    <div key={index} className="px-2 h-[550px]" onClick={() => openModal(meal)}>
+                    <div key={index} className="px-2 h-[550px] w-full" onClick={() => openModal(meal)}>
                         <MealCard
                             title={meal.title}
-                            description={meal.description}
-                            servingSize={meal.servingSize}
-                            price={meal.price}
+                            servingSize={meal.servings}
+                            image={meal.image}
+                            price={meal.pricePerServing}
                         />
                     </div>
                 ))}

@@ -1,17 +1,25 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchMeals } from "@/lib/fetchMeals";
+import { fetchUserInfo } from "@/lib/fetchUserInfo";
 import HomepageContent from "./HomepageContent";
 
 export default function HomepageClient({ email, session }) {
-    const { data: meals, isLoading, error } = useQuery({
+    const { data, isLoading, error } = useQuery({
         queryKey: ["meals", email],
-        queryFn: () => fetchMeals(email),
+        queryFn: () => fetchUserInfo(email),
     });
 
-    if (isLoading) return <div className="text-center mt-10">Loading meals...</div>;
-    if (error) return <div className="text-center text-red-500">Failed to load meals.</div>;
+    if (isLoading)
+        return <div className="text-center mt-10">Loading meals...</div>;
+    if (error)
+        return (
+            <div className="text-center text-red-500">
+                Failed to load meals.
+            </div>
+        );
 
-    return <HomepageContent meals={meals} email={email} session={session} />;
+    return (
+        <HomepageContent meals={data.recipes} email={email} session={session} />
+    );
 }

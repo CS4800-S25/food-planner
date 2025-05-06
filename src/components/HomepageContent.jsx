@@ -1,5 +1,3 @@
-import Link from "next/link";
-import SignOutButton from "./SignOutButton";
 import GenerateMealLogic from "./GenerateMealLogic";
 import MealsCarousel from "./MealsCarousel";
 import Navbar from "@/components/Navbar";
