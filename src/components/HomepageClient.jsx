@@ -4,8 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserInfo } from "@/lib/fetchUserInfo";
 import HomepageContent from "./HomepageContent";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function HomepageClient() {
+    const router = useRouter();
     const { data: session } = useSession();
     const email = session?.user?.email || null;
 
@@ -23,6 +25,11 @@ export default function HomepageClient() {
                 Failed to load meals.
             </div>
         );
+    if (!data) {
+        router.push("/login");
+        return null; // or a loading spinner, etc.
+    }
+
 
     return <HomepageContent meals={data.recipes} email={email} session={session} />;
 }
