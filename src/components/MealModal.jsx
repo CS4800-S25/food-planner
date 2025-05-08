@@ -12,23 +12,31 @@ export default function MealModal({ isOpen, closeModal, meal }) {
         setLocalMeal({ ...localMeal, ingredients: updatedIngredients });
     };
 
-    const handleSubstituteIngredient = (index) => {
+    const handleSubstituteIngredient = async (index) => {
         const updatedIngredients = [...localMeal.ingredients];
+        
+        const response = await fetch("/api/substitute-ingredient", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: localMeal.title,
+                servings: localMeal.servingSize,
+                ingredients: localMeal.ingredients,
+                healthDetails: localMeal.healthDetails,
+                replace: localMeal.ingredients[index].name,
+            }),
+        });
+        const apiSubstituteResponse = await response.json();
 
-        // Dummy substitute logic: random new ingredient
-        const randomIngredients = [
-            { name: "Chicken", price: 12 },
-            { name: "Salmon", price: 20 },
-            { name: "Broccoli", price: 3 },
-            { name: "Sweet Potato", price: 4 },
-            { name: "Tofu", price: 5 },
-        ];
-
-        const random =
-            randomIngredients[
-                Math.floor(Math.random() * randomIngredients.length)
-            ];
-        updatedIngredients[index] = random;
+        if (apiSubstituteResponse) {
+            const { quantity, ingredient, message } = apiSubstituteResponse;
+            updatedIngredients[index] = {
+                name: ingredient,
+                amount: quantity,
+            };
+        }
 
         setLocalMeal({ ...localMeal, ingredients: updatedIngredients });
     };
