@@ -83,7 +83,7 @@ export async function POST(request) {
                 }
             }
         },
-        reasoning: { effort: "medium" },
+        reasoning: { effort: "low" },
         tools: [],
         store: true
     });
