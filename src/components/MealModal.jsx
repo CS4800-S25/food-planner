@@ -66,7 +66,7 @@ export default function MealModal({ isOpen, closeModal, meal }) {
                     <div className="space-y-4 text-gray-700">
                         <div className="flex justify-between">
                             <span className="font-semibold">Total Cost:</span>
-                            <span>${meal.price}</span>
+                            <span>${((meal.price / 100) * meal.servingSize).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="font-semibold">Serving Size:</span>
