@@ -2,6 +2,7 @@
 
 import MealCard from "@/components/MealCard";
 import MealModal from "@/components/MealModal";
+import InstructionsModal from "@/components/InstructionsModal";
 import { useState } from "react";
 import {
     Carousel,
@@ -14,6 +15,10 @@ import {
 export default function MealsCarousel({ meals }) {
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [mealForInstructions, setMealForInstructions] = useState(null);
+    const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
+
 
     const openModal = (meal) => {
         console.log("Meal clicked:", meal);
@@ -32,6 +37,12 @@ export default function MealsCarousel({ meals }) {
     const closeModal = () => {
         setSelectedMeal(null);
         setIsModalOpen(false);
+    };
+
+
+    const handleInstructionsClick = (meal) => {
+        setMealForInstructions(meal); // save full meal data (title + ingredients)
+        setIsInstructionsOpen(true); // open the InstructionsModal
     };
 
     // If meals is empty, show a message
@@ -63,6 +74,12 @@ export default function MealsCarousel({ meals }) {
                                     servingSize={meal.servings}
                                     imageUrl={meal.image}
                                     price={meal.pricePerServing}
+
+                                    onInstructionsClick={(e) => {
+                                        e.stopPropagation(); // 
+                                        handleInstructionsClick(meal); // send full meal to modal
+                                    }}
+
                                 />
                             </div>
                         </CarouselItem>
@@ -76,6 +93,15 @@ export default function MealsCarousel({ meals }) {
                 closeModal={closeModal}
                 meal={selectedMeal}
             />
+
+            {isInstructionsOpen && mealForInstructions && (
+                <InstructionsModal
+                    isOpen={isInstructionsOpen}
+                    onClose={() => setIsInstructionsOpen(false)}
+                    meal={mealForInstructions} 
+                />
+            )}
+
         </div>
     );
 }

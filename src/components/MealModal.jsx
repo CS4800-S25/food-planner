@@ -47,7 +47,7 @@ export default function MealModal({ isOpen, closeModal, meal }) {
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <Dialog.Panel className="relative w-full max-w-2xl rounded-lg bg-white p-8 shadow-lg">
+                <Dialog.Panel className="relative w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-lg bg-white p-8 shadow-lg">
                     {/* Header with Title and Close Button */}
                     <div className="flex justify-between items-center mb-6">
                         <Dialog.Title className="text-3xl font-bold">
