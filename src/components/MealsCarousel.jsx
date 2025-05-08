@@ -41,8 +41,11 @@ export default function MealsCarousel({ meals }) {
 
 
     const handleInstructionsClick = (meal) => {
-        setMealForInstructions(meal); // save full meal data (title + ingredients)
-        setIsInstructionsOpen(true); // open the InstructionsModal
+        setMealForInstructions({
+            title: meal.title,
+            ingredients: meal.ingredientsList || [], 
+        });
+        setIsInstructionsOpen(true);
     };
 
     // If meals is empty, show a message
