@@ -15,7 +15,6 @@ import { useSession } from "next-auth/react";
 import { addDoc, collection } from "firebase/firestore";
 import db from "@/lib/firebase";
 
-
 async function generateRecipes(
     budget,
     healthDetails,
@@ -44,7 +43,27 @@ async function savePreferencesAndRedirect(userEmail, formData) {
     try {
         let checkUserExists = await fetchUserInfo(userEmail);
         if (checkUserExists) {
-            console.log("User already exists in Firestore. Skipping save.");
+            const id = checkUserExists.id;
+
+            let recipeList = await generateRecipes(
+                formData.budget,
+                formData.healthDetails,
+                formData.healthGoal,
+                formData.ingredientPreferences,
+                formData.numberOfMeals
+            );
+            console.log("Generated recipes!");
+
+            console.log(recipeList);
+            const docData = {
+                email: userEmail,
+                preferences: formData,
+                timestamp: new Date(),
+                recipes: recipeList.recipes,
+            };
+
+            await setDoc(doc(db, "userMealPlans", id), docData);
+            console.log("Saved to Firebase!");
         } else {
             let recipeList = await generateRecipes(
                 formData.budget,
