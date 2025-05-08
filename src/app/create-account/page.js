@@ -12,7 +12,7 @@ import FinalizeAccount from "./FinalizeAccount";
 import { useRouter } from "next/navigation";
 import { fetchUserInfo } from "@/lib/fetchUserInfo";
 import { useSession } from "next-auth/react";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, setDoc, doc } from "firebase/firestore";
 import db from "@/lib/firebase";
 
 async function generateRecipes(
@@ -42,46 +42,28 @@ async function generateRecipes(
 async function savePreferencesAndRedirect(userEmail, formData) {
     try {
         let checkUserExists = await fetchUserInfo(userEmail);
+
+        let recipeList = await generateRecipes(
+            formData.budget,
+            formData.healthDetails,
+            formData.healthGoal,
+            formData.ingredientPreferences,
+            formData.numberOfMeals
+        );
+        console.log("Generated recipes!");
+        console.log(recipeList);
+
+        const docData = {
+            email: userEmail,
+            preferences: formData,
+            timestamp: new Date(),
+            recipes: recipeList.recipes,
+        };
+
         if (checkUserExists) {
-            const id = checkUserExists.id;
-
-            let recipeList = await generateRecipes(
-                formData.budget,
-                formData.healthDetails,
-                formData.healthGoal,
-                formData.ingredientPreferences,
-                formData.numberOfMeals
-            );
-            console.log("Generated recipes!");
-
-            console.log(recipeList);
-            const docData = {
-                email: userEmail,
-                preferences: formData,
-                timestamp: new Date(),
-                recipes: recipeList.recipes,
-            };
-
-            await setDoc(doc(db, "userMealPlans", id), docData);
+            await setDoc(doc(db, "userMealPlans", checkUserExists.id), docData);
             console.log("Saved to Firebase!");
         } else {
-            let recipeList = await generateRecipes(
-                formData.budget,
-                formData.healthDetails,
-                formData.healthGoal,
-                formData.ingredientPreferences,
-                formData.numberOfMeals
-            );
-            console.log("Generated recipes!");
-
-            console.log(recipeList);
-            const docData = {
-                email: userEmail,
-                preferences: formData,
-                timestamp: new Date(),
-                recipes: recipeList.recipes,
-            };
-
             await addDoc(collection(db, "userMealPlans"), docData);
             console.log("Saved to Firebase!");
         }
