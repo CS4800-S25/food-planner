@@ -122,16 +122,6 @@ export default function MealModal({ isOpen, closeModal, meal }) {
                             ))}
                         </div>
                     )}
-
-                    {/* Buttons */}
-                    <div className="flex justify-center gap-4 mt-8">
-                        <button
-                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                            onClick={() => alert("Refresh Meal (coming soon)")}
-                        >
-                            Refresh Meal
-                        </button>
-                    </div>
                 </Dialog.Panel>
             </div>
         </Dialog>
